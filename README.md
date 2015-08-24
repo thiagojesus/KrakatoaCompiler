@@ -31,7 +31,7 @@ LowOperator ::= “+” | “−” | “||” <br />
 MemberList ::= { Qualifier Member } <br />
 Member ::= InstVarDec | MethodDec <br />
 MethodDec ::= Type Id “(” [ FormalParamDec ] “)” <br />
-              “{” StatementList “}” <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“{” StatementList “}” <br />
 MOCall ::= “@” Id [ “(” { MOParam } “)” ] <br />
 MOParam ::= IntValue | StringValue | Id <br />
 ObjectCreation ::= “new” Id “(” “)” <br />
@@ -40,13 +40,13 @@ Program ::= { MOCall } ClassDec { ClassDec } <br />
 Qualifier ::= [ “final” ] [ “static” ] ( “private” | “public”) <br />
 ReadStat ::= “read” “(” LeftValue { “,” LeftValue } “)” <br />
 PrimaryExpr ::= “super” “.” Id “(” [ ExpressionList ] “)” | <br />
-                Id | <br />
-                Id “.” Id | <br />
-                Id “.” Id “(” [ ExpressionList ] ”)” | <br />
-                Id “.” Id “.” Id “(” [ ExpressionList ] “)” | “this” | <br />
-                “this” “.” Id | <br />
-                “this” ”.” Id “(” [ ExpressionList ] “)” | <br />
-                “this” ”.” Id “.” Id “(” [ ExpressionList ] “)” <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Id | <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Id “.” Id | <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Id “.” Id “(” [ ExpressionList ] ”)” | <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Id “.” Id “.” Id “(” [ ExpressionList ] “)” | “this” | <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“this” “.” Id | <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“this” ”.” Id “(” [ ExpressionList ] “)” | <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“this” ”.” Id “.” Id “(” [ ExpressionList ] “)” <br />
 Relation ::= “==” | “<” | “>” | “<=” | “>=” | “! =” <br />
 ReturnStat ::= “return” Expression <br />
 RightValue ::= “this” [ “.” Id ] | Id [ “.” Id ] <br />
@@ -54,7 +54,7 @@ Signal ::= “+” | “−” <br />
 SignalFactor ::= [ Signal ] Factor <br />
 SimpleExpression ::= Term { LowOperator Term } <br />
 Statement ::= AssignExprLocalDec “;” | IfStat | WhileStat | ReturnStat “;” | <br />
-              ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompStatement <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompStatement <br />
 StatementList ::= { Statement } <br />
 Term ::= SignalFactor { HighOperator SignalFactor } <br />
 Type ::= BasicType | Id <br />
