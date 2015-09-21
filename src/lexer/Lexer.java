@@ -52,7 +52,7 @@ public class Lexer {
 		keywordsTable.put( "private", Symbol.PRIVATE );
 		keywordsTable.put( "String", Symbol.STRING );
 		keywordsTable.put( "extends", Symbol.EXTENDS );
-
+		keywordsTable.put("static", Symbol.STATIC);
 	}
 
 

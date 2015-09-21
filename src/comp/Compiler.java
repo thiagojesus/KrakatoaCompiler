@@ -91,7 +91,7 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 				metaobjectCallList.add(metaobjectCall());
 			}
 			kraClassList.add(classDec());
-			while ( lexer.token == Symbol.CLASS )
+			while ( lexer.token == Symbol.CLASS || lexer.token == Symbol.FINAL)
 				kraClassList.add(classDec());
 			if ( lexer.token != Symbol.EOF ) {
 				signalError.show("End of file expected");
@@ -164,140 +164,185 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 	}
 
 	private KraClass classDec() {
+		KraClass superClass = new KraClass(null,false);
+		boolean isFinal = false;
+		boolean isPrivate = false;
+		boolean isStatic = false;
+		Symbol qualifier = null;
+		ArrayList<Method> MethodList = new ArrayList<Method>();
+		InstanceVariableList varList = new InstanceVariableList();
 		// Note que os m�todos desta classe n�o correspondem exatamente �s
 		// regras
 		// da gram�tica. Este m�todo classDec, por exemplo, implementa
 		// a produ��o KraClass (veja abaixo) e partes de outras produ��es.
 
 		/*
-		 * KraClass ::= ``class'' Id [ ``extends'' Id ] "{" MemberList "}"
+		 * KraClass ::= [``final'']``class'' Id [ ``extends'' Id ] "{" MemberList "}"
 		 * MemberList ::= { Qualifier Member } 
 		 * Member ::= InstVarDec | MethodDec
 		 * InstVarDec ::= Type IdList ";" 
 		 * MethodDec ::= Qualifier Type Id "("[ FormalParamDec ] ")" "{" StatementList "}" 
 		 * Qualifier ::= [ "static" ]  ( "private" | "public" )
 		 */
+		//verifica se é final
+		if(lexer.token == Symbol.FINAL){
+			isFinal = true;
+			lexer.nextToken();
+		}
+		
 		if ( lexer.token != Symbol.CLASS ) signalError.show("'class' expected");
 		lexer.nextToken();
 		if ( lexer.token != Symbol.IDENT )
 			signalError.show(SignalError.ident_expected);
 		String className = lexer.getStringValue();
-		symbolTable.putInGlobal(className, new KraClass(className));
+		symbolTable.putInGlobal(className, new KraClass(className, isFinal));
 		lexer.nextToken();
 		if ( lexer.token == Symbol.EXTENDS ) {
+			//verificar se existe, se não é final e mandar pra kraclass
+			//será que a gente copia os métodos e variaveis do pai pra essa tbm?
 			lexer.nextToken();
 			if ( lexer.token != Symbol.IDENT )
 				signalError.show(SignalError.ident_expected);
 			String superclassName = lexer.getStringValue();
-
+			superClass = symbolTable.getInGlobal(superclassName); 
+			if(superClass == null){
+				signalError.show("The inherithed class does not exist");
+			}else{
+				if(superClass.isFinal() == true){
+					signalError.show("final classes can not be inherithed");
+				}
+			}
 			lexer.nextToken();
 		}
 		if ( lexer.token != Symbol.LEFTCURBRACKET )
 			signalError.show("{ expected", true);
 		lexer.nextToken();
 
-		while (lexer.token == Symbol.PRIVATE || lexer.token == Symbol.PUBLIC) {
-
-			Symbol qualifier;
+		while (lexer.token == Symbol.STATIC || lexer.token == Symbol.PRIVATE || lexer.token == Symbol.PUBLIC) {
+			
 			switch (lexer.token) {
 			case PRIVATE:
 				lexer.nextToken();
 				qualifier = Symbol.PRIVATE;
+				isPrivate = true;
 				break;
 			case PUBLIC:
 				lexer.nextToken();
 				qualifier = Symbol.PUBLIC;
+				break;
+			case STATIC:
+				lexer.nextToken();
+				isStatic = true;
 				break;
 			default:
 				signalError.show("private, or public expected");
 				qualifier = Symbol.PUBLIC;
 			}
 			Type t = type();
+			currentReturnType = t;
 			if ( lexer.token != Symbol.IDENT )
 				signalError.show("Identifier expected");
 			String name = lexer.getStringValue();
 			lexer.nextToken();
-			if ( lexer.token == Symbol.LEFTPAR )
-				methodDec(t, name, qualifier);
+			//se tem ( é método
+			if ( lexer.token == Symbol.LEFTPAR ){
+				MethodList.add(methodDec(t,name,qualifier,isStatic));
+			}
+			//senão é variável de instância
 			else if ( qualifier != Symbol.PRIVATE )
 				signalError.show("Attempt to declare a public instance variable");
 			else
-				instanceVarDec(t, name);
+				varList = instanceVarDec(t, name);
+				currentInstanceVariableList = varList;
 		}
 		if ( lexer.token != Symbol.RIGHTCURBRACKET )
 			signalError.show("public/private or \"}\" expected");
 		lexer.nextToken();
+		return new KraClass(className,className,superClass,varList,isFinal,MethodList);
 
 	}
-
-	private void instanceVarDec(Type type, String name) {
+	private InstanceVariableList instanceVarDec(Type type, String name) {
 		// InstVarDec ::= [ "static" ] "private" Type IdList ";"
-
+		String variableName;
+		InstanceVariableList varList = new InstanceVariableList();
+		varList.addElement(new InstanceVariable(name, type));
 		while (lexer.token == Symbol.COMMA) {
 			lexer.nextToken();
 			if ( lexer.token != Symbol.IDENT )
 				signalError.show("Identifier expected");
-			String variableName = lexer.getStringValue();
+			variableName = lexer.getStringValue();
+			varList.addElement(new InstanceVariable(variableName, type));
 			lexer.nextToken();
 		}
 		if ( lexer.token != Symbol.SEMICOLON )
 			signalError.show(SignalError.semicolon_expected);
 		lexer.nextToken();
+		return varList;
 	}
 
-	private void methodDec(Type type, String name, Symbol qualifier) {
+	private Method methodDec(Type type, String name, Symbol qualifier, boolean isStatic) {
 		/*
 		 * MethodDec ::= Qualifier Return Id "("[ FormalParamDec ] ")" "{"
 		 *                StatementList "}"
 		 */
-
+		StatementList stList;
+		ParamList pL = new ParamList();
 		lexer.nextToken();
-		if ( lexer.token != Symbol.RIGHTPAR ) formalParamDec();
+		if ( lexer.token != Symbol.RIGHTPAR ) pL = formalParamDec();
 		if ( lexer.token != Symbol.RIGHTPAR ) signalError.show(") expected");
 
 		lexer.nextToken();
 		if ( lexer.token != Symbol.LEFTCURBRACKET ) signalError.show("{ expected");
 
 		lexer.nextToken();
-		statementList();
+		stList = statementList();
 		if ( lexer.token != Symbol.RIGHTCURBRACKET ) signalError.show("} expected");
 
 		lexer.nextToken();
+		return new Method(qualifier, type, name, pL, stList);
 
 	}
 
-	private void localDec() {
+	private VariableList localDec() {
 		// LocalDec ::= Type IdList ";"
-
+		ArrayList<Variable>v = new ArrayList<Variable>();
 		Type type = type();
 		if ( lexer.token != Symbol.IDENT ) signalError.show("Identifier expected");
-		Variable v = new Variable(lexer.getStringValue(), type);
+		v.add(new Variable(lexer.getStringValue(), type));
 		lexer.nextToken();
 		while (lexer.token == Symbol.COMMA) {
 			lexer.nextToken();
 			if ( lexer.token != Symbol.IDENT )
 				signalError.show("Identifier expected");
-			v = new Variable(lexer.getStringValue(), type);
+			v.add(new Variable(lexer.getStringValue(), type));
 			lexer.nextToken();
 		}
+		return new VariableList(v);
 	}
 
-	private void formalParamDec() {
+	private ParamList formalParamDec() {
 		// FormalParamDec ::= ParamDec { "," ParamDec }
-
-		paramDec();
+		ParamList p = new ParamList();
+		p.addElement(paramDec());
 		while (lexer.token == Symbol.COMMA) {
 			lexer.nextToken();
-			paramDec();
+			p.addElement(paramDec());
 		}
+		return p;
 	}
 
-	private void paramDec() {
+	private Parameter paramDec() {
 		// ParamDec ::= Type Id
-
-		type();
-		if ( lexer.token != Symbol.IDENT ) signalError.show("Identifier expected");
+		String name = null;
 		lexer.nextToken();
+		Type t = type();
+		if ( lexer.token != Symbol.IDENT ){
+			signalError.show("Identifier expected");
+		}else{
+			name = lexer.getStringValue();
+		}
+		lexer.nextToken();
+		return new Parameter(name,t);
 	}
 
 	private Type type() {
@@ -320,6 +365,7 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 		case IDENT:
 			// # corrija: fa�a uma busca na TS para buscar a classe
 			// IDENT deve ser uma classe.
+			//AQUI A PORRA FICA MUITO SÉRIA
 			result = null;
 			break;
 		default:
@@ -330,26 +376,30 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 		return result;
 	}
 
-	private void compositeStatement() {
-
+	private CompositeStatement compositeStatement() {
+		Statement s;
 		lexer.nextToken();
-		statementList();
+		s = statement();
 		if ( lexer.token != Symbol.RIGHTCURBRACKET )
 			signalError.show("} expected");
 		else
 			lexer.nextToken();
+		return new CompositeStatement(s);
 	}
 
-	private void statementList() {
+	private StatementList statementList() {
+		ArrayList<Statement> sL = new ArrayList<Statement>();
 		// CompStatement ::= "{" { Statement } "}"
 		Symbol tk;
 		// statements always begin with an identifier, if, read, write, ...
 		while ((tk = lexer.token) != Symbol.RIGHTCURBRACKET
 				&& tk != Symbol.ELSE)
-			statement();
+			sL.add(statement());
+		return new StatementList(sL);
 	}
 
-	private void statement() {
+	private Statement statement() {
+		Statement s;
 		/*
 		 * Statement ::= Assignment ``;'' | IfStat |WhileStat | MessageSend
 		 *                ``;'' | ReturnStat ``;'' | ReadStat ``;'' | WriteStat ``;'' |
@@ -363,38 +413,39 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 		case INT:
 		case BOOLEAN:
 		case STRING:
-			assignExprLocalDec();
+			s = assignExprLocalDec(); //esse puto aqui parece ser importante
 			break;
 		case RETURN:
-			returnStatement();
+			s = returnStatement();
 			break;
 		case READ:
-			readStatement();
+			s = readStatement();
 			break;
 		case WRITE:
-			writeStatement();
+			s = writeStatement();
 			break;
 		case WRITELN:
-			writelnStatement();
+			s = writelnStatement();
 			break;
 		case IF:
-			ifStatement();
+			s = ifStatement();
 			break;
 		case BREAK:
-			breakStatement();
+			s = breakStatement();
 			break;
 		case WHILE:
-			whileStatement();
+			s = whileStatement();
 			break;
 		case SEMICOLON:
-			nullStatement();
+			s = nullStatement();
 			break;
 		case LEFTCURBRACKET:
-			compositeStatement();
+			s = compositeStatement();
 			break;
 		default:
 			signalError.show("Statement expected");
 		}
+		return s;
 	}
 
 	/*
@@ -409,7 +460,7 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 	 * AssignExprLocalDec ::= Expression [ ``$=$'' Expression ] | LocalDec
 	 */
 	private Expr assignExprLocalDec() {
-
+		VariableList vL;
 		if ( lexer.token == Symbol.INT || lexer.token == Symbol.BOOLEAN
 				|| lexer.token == Symbol.STRING ||
 				// token � uma classe declarada textualmente antes desta
@@ -421,7 +472,7 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 			 * AssignExprLocalDec ::= Expression [ ``$=$'' Expression ] | LocalDec 
 			 * LocalDec ::= Type IdList ``;''
 			 */
-			localDec();
+			vL = localDec();
 		}
 		else {
 			/*
@@ -451,42 +502,48 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 		return anExprList;
 	}
 
-	private void whileStatement() {
-
+	private WhileStatement whileStatement() {
+		Expr condition;
+		Statement repeat;
 		lexer.nextToken();
 		if ( lexer.token != Symbol.LEFTPAR ) signalError.show("( expected");
 		lexer.nextToken();
-		expr();
+		condition = expr();
 		if ( lexer.token != Symbol.RIGHTPAR ) signalError.show(") expected");
 		lexer.nextToken();
-		statement();
+		repeat = statement();
+		return new WhileStatement(condition, repeat);
 	}
 
-	private void ifStatement() {
-
+	private IfStatement ifStatement() {
+		Expr e;
+		Statement thenPart, elsePart = null;
 		lexer.nextToken();
 		if ( lexer.token != Symbol.LEFTPAR ) signalError.show("( expected");
 		lexer.nextToken();
-		expr();
+		e = expr();
 		if ( lexer.token != Symbol.RIGHTPAR ) signalError.show(") expected");
 		lexer.nextToken();
-		statement();
+		thenPart = statement();
 		if ( lexer.token == Symbol.ELSE ) {
 			lexer.nextToken();
-			statement();
+			elsePart = statement();
 		}
+		return new IfStatement(e, thenPart, elsePart);
 	}
 
-	private void returnStatement() {
-
+	private ReturnStatement returnStatement() {
+		Expr expr;
 		lexer.nextToken();
-		expr();
+		expr = expr();
 		if ( lexer.token != Symbol.SEMICOLON )
 			signalError.show(SignalError.semicolon_expected);
 		lexer.nextToken();
+		return new ReturnStatement(expr);
 	}
 
-	private void readStatement() {
+	private ReadStatement readStatement() {
+		ArrayList<String> id = new ArrayList<String>();
 		lexer.nextToken();
 		if ( lexer.token != Symbol.LEFTPAR ) signalError.show("( expected");
 		lexer.nextToken();
@@ -501,6 +558,9 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 
 			String name = lexer.getStringValue();
 			lexer.nextToken();
+			//procuro nas variaveis de instancia
+			if(!currentInstanceVariableList.isThere(name)) signalError.show("instance variable not declared");
+			id.add(name);
 			if ( lexer.token == Symbol.COMMA )
 				lexer.nextToken();
 			else
@@ -512,43 +572,48 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 		if ( lexer.token != Symbol.SEMICOLON )
 			signalError.show(SignalError.semicolon_expected);
 		lexer.nextToken();
+		return new ReadStatement(id);
 	}
 
-	private void writeStatement() {
-
+	private WriteStatement writeStatement() {
+		ExprList eS = new ExprList();
 		lexer.nextToken();
 		if ( lexer.token != Symbol.LEFTPAR ) signalError.show("( expected");
 		lexer.nextToken();
-		exprList();
+		eS = exprList();
 		if ( lexer.token != Symbol.RIGHTPAR ) signalError.show(") expected");
 		lexer.nextToken();
 		if ( lexer.token != Symbol.SEMICOLON )
 			signalError.show(SignalError.semicolon_expected);
 		lexer.nextToken();
+		return new WriteStatement(eS, false);
 	}
 
-	private void writelnStatement() {
-
+	private WriteStatement writelnStatement() {
+		ExprList eL;
 		lexer.nextToken();
 		if ( lexer.token != Symbol.LEFTPAR ) signalError.show("( expected");
 		lexer.nextToken();
-		exprList();
+		eL = exprList();
 		if ( lexer.token != Symbol.RIGHTPAR ) signalError.show(") expected");
 		lexer.nextToken();
 		if ( lexer.token != Symbol.SEMICOLON )
 			signalError.show(SignalError.semicolon_expected);
 		lexer.nextToken();
+		return new WriteStatement(eL, true);
 	}
 
-	private void breakStatement() {
+	private BreakStatement breakStatement() {
 		lexer.nextToken();
 		if ( lexer.token != Symbol.SEMICOLON )
 			signalError.show(SignalError.semicolon_expected);
 		lexer.nextToken();
+		return new BreakStatement();
 	}
 
-	private void nullStatement() {
+	private Statement nullStatement() {
 		lexer.nextToken();
+		return null;
 	}
 
 	private ExprList exprList() {
@@ -856,5 +921,6 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 	private SymbolTable		symbolTable;
 	private Lexer			lexer;
 	private SignalError	signalError;
-
+	private InstanceVariableList currentInstanceVariableList;
+	private Type currentReturnType;
 }
