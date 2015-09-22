@@ -41,5 +41,6 @@ public class Method{
 	private Symbol qualifier;
 	private String id;
 	private ParamList variables;
+	//lista de variaveis locais
 	private StatementList statementList;
 }

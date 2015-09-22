@@ -1,6 +1,7 @@
 package ast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 
 /*
@@ -31,19 +32,19 @@ public class KraClass extends Type {
    
 
    public KraClass(String name, String name2, KraClass superclass, InstanceVariableList instanceVariableList,
-		boolean isFinal, ArrayList<Method> MethodList) {
+		boolean isFinal, HashMap<String, Method> methodHash) {
 	super(name);
 	this.name = name2;
 	this.superclass = superclass;
 	this.instanceVariableList = instanceVariableList;
 	this.isFinal = isFinal;
-	this.MethodList = MethodList;
+	this.methodHash = methodHash;
 }
    private String name;
    private KraClass superclass;
    private InstanceVariableList instanceVariableList;
    private boolean isFinal;
-   private ArrayList<Method> MethodList;
+   private HashMap<String,Method> methodHash;
    // m�todos p�blicos get e set para obter e iniciar as vari�veis acima,
    // entre outros m�todos
 }

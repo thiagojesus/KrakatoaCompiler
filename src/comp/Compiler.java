@@ -165,11 +165,13 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 
 	private KraClass classDec() {
 		KraClass superClass = new KraClass(null,false);
+		KraClass kraClass;
 		boolean isFinal = false;
 		boolean isPrivate = false;
 		boolean isStatic = false;
 		Symbol qualifier = null;
-		ArrayList<Method> MethodList = new ArrayList<Method>();
+		Method method;
+		HashMap methodHash = new HashMap<String, Method>();
 		InstanceVariableList varList = new InstanceVariableList();
 		// Note que os m�todos desta classe n�o correspondem exatamente �s
 		// regras
@@ -195,7 +197,7 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 		if ( lexer.token != Symbol.IDENT )
 			signalError.show(SignalError.ident_expected);
 		String className = lexer.getStringValue();
-		symbolTable.putInGlobal(className, new KraClass(className, isFinal));
+		//colocar na global somente após toda a validação
 		lexer.nextToken();
 		if ( lexer.token == Symbol.EXTENDS ) {
 			//verificar se existe, se não é final e mandar pra kraclass
@@ -246,7 +248,7 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 			lexer.nextToken();
 			//se tem ( é método
 			if ( lexer.token == Symbol.LEFTPAR ){
-				MethodList.add(methodDec(t,name,qualifier,isStatic));
+				methodHash.put(name, methodDec(t, name, qualifier, isStatic));
 			}
 			//senão é variável de instância
 			else if ( qualifier != Symbol.PRIVATE )
@@ -258,7 +260,9 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 		if ( lexer.token != Symbol.RIGHTCURBRACKET )
 			signalError.show("public/private or \"}\" expected");
 		lexer.nextToken();
-		return new KraClass(className,className,superClass,varList,isFinal,MethodList);
+		kraClass = new KraClass(className,className,superClass,varList,isFinal,methodHash);
+		symbolTable.putInGlobal(className, kraClass);
+		return kraClass;
 
 	}
 	private InstanceVariableList instanceVarDec(Type type, String name) {
