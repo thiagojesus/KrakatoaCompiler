@@ -26,6 +26,12 @@ public class InstanceVariableList {
     	}
     	return false;
     }
+    
+    public void genKra(PW pw, boolean putParenthesis){
+    	for(InstanceVariable v: instanceVariableList){
+    		v.genKra(pw, putParenthesis);
+    	}
+    }
 
     private ArrayList<InstanceVariable> instanceVariableList;
 

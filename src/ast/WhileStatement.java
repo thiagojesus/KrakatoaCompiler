@@ -21,4 +21,19 @@ public class WhileStatement extends Statement {
 		
 	}
 
+
+
+	@Override
+	public void genKra(PW pw, boolean putParenthesis) {
+		pw.add();
+        pw.printIdent("while");
+        pw.print("(");
+        condition.genKra(pw, putParenthesis);
+        pw.print(")");
+        pw.println("");
+        repeat.genKra(pw, putParenthesis);         
+        pw.sub();
+		
+	}
+
 }

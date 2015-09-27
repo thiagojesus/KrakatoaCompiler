@@ -15,4 +15,19 @@ public class WriteStatement extends Statement {
 		
 	}
 
+	@Override
+	public void genKra(PW pw, boolean putParenthesis) {
+		pw.add();
+		if(isLn){
+			pw.printIdent("writeln");
+		}else{
+			pw.printIdent("write");
+		}
+        pw.print("(");
+        eL.genK(pw, putParenthesis);
+        pw.print(")");
+        pw.sub();
+		
+	}
+
 }

@@ -21,6 +21,14 @@ public class ExprList {
                 pw.print(", ");
         }
     }
+    
+    public void genK(PW pw, boolean putParenthesis){
+       exprList.remove(0).genKra(pw, putParenthesis);
+        for(Expr exp : exprList){
+            pw.print(",");
+            exp.genKra(pw, putParenthesis);
+        }
+    }
 
     private ArrayList<Expr> exprList;
 

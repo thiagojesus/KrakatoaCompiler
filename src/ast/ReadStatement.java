@@ -15,4 +15,19 @@ public class ReadStatement extends Statement {
 		this.variables = v;
 	}
 
+	@Override
+	public void genKra(PW pw, boolean putParenthesis) {
+		pw.add();
+        pw.printIdent("read");
+        pw.print("(");         
+        pw.print(variables.remove(0));   
+        for(String lv : variables){
+            pw.print(",");
+            pw.print(lv);
+        }
+        pw.print(")");
+        pw.sub();
+		
+	}
+
 }

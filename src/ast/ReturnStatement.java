@@ -12,4 +12,13 @@ public class ReturnStatement extends Statement {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void genKra(PW pw, boolean putParenthesis) {
+		pw.add();
+        pw.printIdent("return ");
+        e.genKra(pw, putParenthesis);
+        pw.sub();
+		
+	}
 }

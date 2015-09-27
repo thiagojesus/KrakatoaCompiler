@@ -18,5 +18,11 @@ public class CompositeStatement extends Statement {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	public void genKra(PW pw, boolean putParenthesis){
+        pw.println("{");
+        s.genKra(pw, putParenthesis);
+        pw.printlnIdent("}");
+    }
 
 }

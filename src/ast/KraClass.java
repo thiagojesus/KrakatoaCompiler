@@ -30,17 +30,34 @@ public class KraClass extends Type {
 	   return this.getInstanceVariable(name);
    }
    
+   public Method getMethod(String name){
+	   return methodHash.get(name);
+   }
+   
+   public void genKra(PW pw, boolean putParenthesis){
+	   if(isFinal){
+		   pw.print("final ");
+	   }
+	   pw.print("class "+this.getCname());       
+       if(superclass != null){
+           pw.print(" extends "+superclass.getCname());
+       }
+       pw.printlnIdent("{");
+       instanceVariableList.genKra(pw, putParenthesis);
+       for(String key: methodHash.keySet()){
+    	   methodHash.get(key).genKra(pw, putParenthesis);
+       }
+       pw.printlnIdent("}");
+   }
 
-   public KraClass(String name, String name2, KraClass superclass, InstanceVariableList instanceVariableList,
+   public KraClass(String name, KraClass superclass, InstanceVariableList instanceVariableList,
 		boolean isFinal, HashMap<String, Method> methodHash) {
 	super(name);
-	this.name = name2;
 	this.superclass = superclass;
 	this.instanceVariableList = instanceVariableList;
 	this.isFinal = isFinal;
 	this.methodHash = methodHash;
 }
-   private String name;
    private KraClass superclass;
    private InstanceVariableList instanceVariableList;
    private boolean isFinal;
