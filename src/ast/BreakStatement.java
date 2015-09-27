@@ -7,5 +7,11 @@ public class BreakStatement extends Statement {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	public void genKra(PW pw, boolean putParethesis){
+		pw.add();
+        pw.printlnIdent("break;");
+        pw.sub();
+	}
 
 }

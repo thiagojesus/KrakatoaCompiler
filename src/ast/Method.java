@@ -13,7 +13,7 @@ public class Method{
 		this.variables = variables;
 		this.statementList = statementList;
 	}
-	private Type returnType;
+	
 	public Type getType() {
 		return returnType;
 	}
@@ -38,7 +38,24 @@ public class Method{
 	public void setStatementList(StatementList statementList) {
 		this.statementList = statementList;
 	}
+	
+	public void genKra(PW pw, boolean putParenthesis){
+		pw.add();
+        pw.print(qualifier.name()+ " ");
+        pw.print(returnType.getCname());
+        pw.print(this.id);
+        pw.print("(");
+        if(variables != null)
+            variables.genKra(pw, putParenthesis);
+        pw.print(") ");
+        pw.println("{");        
+        statementList.genKra(pw, putParenthesis);        
+        pw.printlnIdent("}");
+        pw.sub();
+	}
+	
 	private Symbol qualifier;
+	private Type returnType;
 	private String id;
 	private ParamList variables;
 	//lista de variaveis locais

@@ -21,4 +21,24 @@ public class IfStatement extends Statement {
 		
 	}
 
+
+	@Override
+	public void genKra(PW pw, boolean putParenthesis) {
+		pw.add();
+        pw.printIdent("if ");
+        pw.print("( ");
+        condition.genKra(pw, putParenthesis);
+        if(thenPart.getClass().getName().equals("AST.CompStatement"))
+            pw.print(" ) ");
+        else
+            pw.println(" ) ");
+        thenPart.genKra(pw, putParenthesis);        
+        if(elsePart!= null){
+            pw.printlnIdent("else");
+            elsePart.genKra(pw, putParenthesis);            
+        }
+        pw.sub();
+		
+	}
+
 }
