@@ -1,6 +1,7 @@
 package ast;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class VariableList {
 	private ArrayList<Variable> v;
@@ -8,6 +9,10 @@ public class VariableList {
 	public VariableList(ArrayList<Variable> v) {
 		super();
 		this.v = v;
+	}
+
+	public Iterator<Variable> elements() {
+		return v.iterator();
 	}
 	
 	//falta implementar os metodos de procurar uma variavel nessa lista pra

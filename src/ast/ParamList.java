@@ -5,14 +5,14 @@ import java.util.*;
 public class ParamList {
 
     public ParamList() {
-       paramList = new ArrayList<Parameter>();
+       paramList = new ArrayList<Variable>();
     }
 
     public void addElement(Parameter v) {
        paramList.add(v);
     }
 
-    public Iterator<Parameter> elements() {
+    public Iterator<Variable> elements() {
         return paramList.iterator();
     }
 
@@ -21,11 +21,11 @@ public class ParamList {
     }
     
     public void genKra(PW pw, boolean putParenthesis){
-    	for(Parameter p: paramList){
+    	for(Variable p: paramList){
     		p.genKra(pw, putParenthesis);
     	}
     }
 
-    private ArrayList<Parameter> paramList;
+    private ArrayList<Variable> paramList;
 
 }

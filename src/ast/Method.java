@@ -54,10 +54,30 @@ public class Method{
         pw.sub();
 	}
 	
+	public Method(String _id, Type _returnType, Symbol _qualifier, boolean _isStatic, boolean _isFinal, KraClass _motherClass){
+		this.id = _id;
+		this.returnType = _returnType;
+		this.qualifier = _qualifier;
+		this.isStatic = _isStatic;
+		this.isFinal = _isFinal;
+		this.motherClass = _motherClass;
+	}
+	
+	public boolean isFinal(){
+		return this.isFinal;
+	}
+	
+	public ParamList getParamList(){
+		return this.variables;
+	}
+	
 	private Symbol qualifier;
+	private boolean isStatic;
+	private boolean isFinal;
+	private KraClass motherClass;
 	private Type returnType;
 	private String id;
 	private ParamList variables;
-	//lista de variaveis locais
+	private ArrayList<Variable> local;
 	private StatementList statementList;
 }

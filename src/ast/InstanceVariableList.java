@@ -20,17 +20,22 @@ public class InstanceVariableList {
         return instanceVariableList.size();
     }
     
-    public boolean isThere(String name){
+    public Variable isThere(String name){
     	for(InstanceVariable v: instanceVariableList){
-    		if(v.getName() == name) return true;
+    		if(v.getName() == name) return v;
     	}
-    	return false;
+    	return null;
     }
     
     public void genKra(PW pw, boolean putParenthesis){
     	for(InstanceVariable v: instanceVariableList){
     		v.genKra(pw, putParenthesis);
     	}
+    }
+    
+    public void addElement(InstanceVariable iV, boolean isStatic){
+    	iV.setStatic(isStatic);
+    	instanceVariableList.add(iV);
     }
 
     private ArrayList<InstanceVariable> instanceVariableList;

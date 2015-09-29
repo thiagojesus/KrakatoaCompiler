@@ -26,12 +26,28 @@ public class KraClass extends Type {
 	   }
    }
    
-   public boolean getInstanceVariable(String name){
-	   return this.getInstanceVariable(name);
+   public Variable getInstanceVariable(String name){
+	   return instanceVariableList.isThere(name);
    }
    
    public Method getMethod(String name){
 	   return methodHash.get(name);
+   }
+   
+   public Method addMethod(Method m){
+	   methodHash.put(m.getId(), m);
+	   return m;
+   }
+   
+   public boolean hasSuper(){
+	   if(this.superclass != null){
+		   return true;
+	   }
+	   return false;
+   }
+   
+   public KraClass getSuper(){
+	   return this.superclass;
    }
    
    public void genKra(PW pw, boolean putParenthesis){
@@ -49,6 +65,10 @@ public class KraClass extends Type {
        }
        pw.printlnIdent("}");
    }
+   
+   public KraClass getSuperClass(){
+	   return this.superclass;
+   }
 
    public KraClass(String name, KraClass superclass, InstanceVariableList instanceVariableList,
 		boolean isFinal, HashMap<String, Method> methodHash) {
@@ -58,9 +78,29 @@ public class KraClass extends Type {
 	this.isFinal = isFinal;
 	this.methodHash = methodHash;
 }
-   private KraClass superclass;
+   
+   public KraClass(String name, boolean isFinal, boolean isStatic){
+	   super(name);
+	   this.isFinal = isFinal;
+	   this.isStatic = isStatic;
+   }
+   
+   public void setSuperclass(KraClass superclass) {
+	this.superclass = superclass;
+}
+   
+   public void addInstances(InstanceVariableList vList, boolean isStatic){
+	   Iterator<InstanceVariable> i;
+	   i = vList.elements();
+	   while(i.hasNext()){
+		   instanceVariableList.addElement(i.next(),isStatic);
+	   }
+   }
+
+private KraClass superclass;
    private InstanceVariableList instanceVariableList;
    private boolean isFinal;
+   private boolean isStatic;
    private HashMap<String,Method> methodHash;
    // m�todos p�blicos get e set para obter e iniciar as vari�veis acima,
    // entre outros m�todos

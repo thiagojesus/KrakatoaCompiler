@@ -2,9 +2,10 @@ package ast;
 
 public class InstanceVariable extends Variable {
 
-    public InstanceVariable( String name, Type type ) {
+    public InstanceVariable( String name, Type type, KraClass _mother ) {
         super(name, type);
         this.staticFlag = false;
+        this.motherClass = _mother;
     }
     
     public void genKra(PW pw, boolean putParenthesis){
@@ -17,6 +18,10 @@ public class InstanceVariable extends Variable {
         
     }
     
+    public void setStatic(boolean isStatic){
+    	this.staticFlag = isStatic;
+    }
+    
      private boolean staticFlag;
-
+     private KraClass motherClass;
 }
