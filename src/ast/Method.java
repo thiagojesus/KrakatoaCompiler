@@ -1,6 +1,7 @@
 package ast;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import lexer.Symbol;
 
@@ -69,6 +70,24 @@ public class Method{
 	
 	public ParamList getParamList(){
 		return this.variables;
+	}
+	
+	public int getParamListSize(){
+		return variables.getSize();
+	}
+	
+	public Iterator<Variable> getParamElements(){
+		return variables.elements();
+	}
+	
+	public boolean isStatic(){
+		return this.isStatic;
+	}
+	
+	public boolean isPrivate(){
+		if(qualifier == Symbol.PRIVATE)
+			return true;
+		return false;
 	}
 	
 	private Symbol qualifier;

@@ -18,6 +18,20 @@ public class Lexer {
         this.error = error;
         metaobjectName = "";
       }
+    
+    public Symbol lookAheadForDot(){
+		if(input[tokenPos] == '.')
+			return Symbol.DOT;
+		return null;
+	}
+
+	public Symbol lookAheadForAttribution(){
+		int tokenCopy = tokenPos;
+		while(input[tokenCopy] == ' ') tokenCopy++;
+		if(input[tokenCopy] == '=')
+			return Symbol.ASSIGN;
+		return null;
+	}
 
 
     private static final int MaxValueInteger = 32767;

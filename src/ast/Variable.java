@@ -19,7 +19,11 @@ public class Variable {
         pw.printIdent(name);
         pw.println(";");
     }
-
+    
+    public boolean isStatic(){
+    	return false;
+    }
+    
     private String name;
     private Type type;
 }

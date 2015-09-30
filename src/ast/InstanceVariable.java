@@ -22,6 +22,10 @@ public class InstanceVariable extends Variable {
     	this.staticFlag = isStatic;
     }
     
+    public boolean isStatic(){
+    	return this.staticFlag;
+    }
+    
      private boolean staticFlag;
      private KraClass motherClass;
 }

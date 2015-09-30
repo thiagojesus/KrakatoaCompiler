@@ -4,14 +4,14 @@ import java.util.ArrayList;
 
 public class ReadStatement extends Statement {
 
-	private ArrayList<String> variables;
+	private ArrayList<Variable> variables;
 	@Override
 	public void genC(PW pw) {
 		// TODO Auto-generated method stub
 		
 	}
 	
-	public ReadStatement(ArrayList<String> v){
+	public ReadStatement(ArrayList<Variable> v){
 		this.variables = v;
 	}
 
@@ -20,10 +20,10 @@ public class ReadStatement extends Statement {
 		pw.add();
         pw.printIdent("read");
         pw.print("(");         
-        pw.print(variables.remove(0));   
-        for(String lv : variables){
+        variables.remove(0).genKra(pw, putParenthesis);   
+        for(Variable lv : variables){
             pw.print(",");
-            pw.print(lv);
+            lv.genKra(pw,putParenthesis);
         }
         pw.print(")");
         pw.sub();

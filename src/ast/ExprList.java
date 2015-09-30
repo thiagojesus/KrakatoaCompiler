@@ -32,4 +32,12 @@ public class ExprList {
 
     private ArrayList<Expr> exprList;
 
+	public Iterator<Expr> elements() {
+		return exprList.iterator();
+	}
+	
+	public int getSize(){
+    	return exprList.size();
+    }
+
 }
