@@ -3,11 +3,11 @@ package ast;
 public class WhileStatement extends Statement {
 
 	private Expr condition;
-	private Statement repeat;
+	private CompositeStatement repeat;
 	
 	
 	
-	public WhileStatement(Expr condition, Statement repeat) {
+	public WhileStatement(Expr condition, CompositeStatement repeat) {
 		super();
 		this.condition = condition;
 		this.repeat = repeat;

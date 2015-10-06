@@ -1,14 +1,16 @@
 package ast;
 
+import java.util.ArrayList;
+
 public class CompositeStatement extends Statement {
 
-	private Statement s;
+	private StatementList s;
 	
 	
 	
-	public CompositeStatement(Statement s) {
+	public CompositeStatement(ArrayList<Statement> _s) {
 		super();
-		this.s = s;
+		s = new StatementList(_s);
 	}
 
 

@@ -12,6 +12,8 @@ public class KraClass extends Type {
    public KraClass( String name, boolean _isFinal ) {
       super(name);
       this.isFinal = _isFinal;
+      this.methodHash = new HashMap<String, Method>();
+      this.instanceVariableList = new InstanceVariableList();
    }
    
    public String getCname() {
@@ -27,7 +29,10 @@ public class KraClass extends Type {
    }
    
    public Variable getInstanceVariable(String name){
-	   return instanceVariableList.isThere(name);
+	   if(instanceVariableList.getSize() !=0)
+		 return instanceVariableList.isThere(name);
+	   else
+		   return null;
    }
    
    public Method getMethod(String name){
@@ -83,6 +88,8 @@ public class KraClass extends Type {
 	   super(name);
 	   this.isFinal = isFinal;
 	   this.isStatic = isStatic;
+	   this.methodHash = new HashMap<String, Method>();
+	   this.instanceVariableList = new InstanceVariableList();
    }
    
    public void setSuperclass(KraClass superclass) {

@@ -99,6 +99,10 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 		}
 		catch( RuntimeException e) {
 			// if there was an exception, there is a compilation signalError
+			for(CompilationError es: signalError.getCompilationErrorList()){
+				System.out.println("error at line "+ es.getLineNumber() +" "+ es.getMessage());
+			}
+			e.printStackTrace();
 		}
 		return new Program(kraClassList, metaobjectCallList, compilationErrorList);
 	}
@@ -283,7 +287,7 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 						signalError.show("run method in Program class must be public");
 					}
 				}
-
+				
 				//o metodo não pode ter o mesmo nome de uma instância
 				Variable inst = currentClass.getInstanceVariable(name);
 				if(inst != null){
@@ -366,7 +370,7 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 		if ( lexer.token != Symbol.RIGHTPAR ) signalError.show(") expected");
 		//metodo run da classe Program não pode ter parametros
 		if(currentMethod.getId().compareTo("run")==0 && currentClass.getName().compareTo("Program")==0){
-			if(pL != null){
+			if(pL.getSize() !=0){
 				signalError.show("run method in Program class must not have parameters");
 			}
 		}
@@ -562,9 +566,14 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 	}
 
 	private CompositeStatement compositeStatement() {
-		Statement s;
+		ArrayList<Statement> s = new ArrayList<Statement>();
 		lexer.nextToken();
-		s = statement();
+		s.add(statement());
+		while(lexer.token != Symbol.RIGHTCURBRACKET){
+			lexer.nextToken();
+			s.add(statement());
+		}
+			
 		if ( lexer.token != Symbol.RIGHTCURBRACKET )
 			signalError.show("} expected");
 		else
@@ -723,7 +732,7 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 
 	private WhileStatement whileStatement() {
 		Expr condition;
-		Statement repeat;
+		CompositeStatement repeat = null;
 		//entrei num while, incremento
 		nested++;
 		lexer.nextToken();
@@ -736,7 +745,7 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 		}
 		if ( lexer.token != Symbol.RIGHTPAR ) signalError.show(") expected");
 		lexer.nextToken();
-		repeat = statement();
+		repeat = compositeStatement();
 		//saindo do while
 		nested--;
 		return new WhileStatement(condition, repeat);

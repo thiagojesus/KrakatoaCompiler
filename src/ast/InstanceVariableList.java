@@ -22,7 +22,7 @@ public class InstanceVariableList {
     
     public Variable isThere(String name){
     	for(InstanceVariable v: instanceVariableList){
-    		if(v.getName() == name) return v;
+    		if(v.getName().compareTo(name) == 0) return v;
     	}
     	return null;
     }
