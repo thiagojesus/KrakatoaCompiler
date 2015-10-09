@@ -9,7 +9,7 @@ public class MessageSendToSuper extends MessageSend {
 	}
 	
     public Type getType() { 
-        return null;
+        return message.getType();
     }
 
     public void genC( PW pw, boolean putParenthesis ) {

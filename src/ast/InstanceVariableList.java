@@ -20,9 +20,9 @@ public class InstanceVariableList {
         return instanceVariableList.size();
     }
     
-    public Variable isThere(String name){
+    public Variable isThere(String name, boolean isStatic){
     	for(InstanceVariable v: instanceVariableList){
-    		if(v.getName().compareTo(name) == 0) return v;
+    		if(v.getName().compareTo(name) == 0 && v.isStatic()==isStatic) return v;
     	}
     	return null;
     }

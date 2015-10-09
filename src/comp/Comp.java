@@ -84,11 +84,11 @@ public class Comp {
 	 */
 	private void printReport(int numSourceFiles, PrintWriter report) {
 		boolean compilerOk = true;
-		report.println("RelatÛrio do Compilador");
+		report.println("Relat√≥rio do Compilador");
 		   report.println();
 		   if ( numSourceFilesWithErros > 0 ) {
 			   report.println(this.shouldButWereNotList.size() + " de um total de " + numSourceFilesWithErros + 
-					   " erros que deveriam ser sinalizados n„o o foram (" +
+					   " erros que deveriam ser sinalizados n√£o o foram (" +
 			              (int ) (100.0*this.shouldButWereNotList.size()/this.numSourceFilesWithErros) + "%)");
 			   report.println(this.wereButWrongLineList.size() + " erros foram sinalizados na linha errada (" 
 					   + (int ) (100.0*this.wereButWrongLineList.size()/this.numSourceFilesWithErros) + "%)");
@@ -108,7 +108,7 @@ public class Comp {
 			   else {
 				   compilerOk = false;
 				   report.println();
-				   report.println("Erros que deveriam ser sinalizados mas n„o foram:");
+				   report.println("Erros que deveriam ser sinalizados mas n√£o foram:");
 				   report.println();
 				   for (String s : this.shouldButWereNotList) {
 					   report.println(s);
@@ -117,7 +117,7 @@ public class Comp {
 			   }
 			   
 			   if ( wereButWrongLineList.size() == 0 ) {
-				   report.println("Um ou mais arquivos de teste tinham erros, mas estes foram sinalizados nos n˙meros de linhas corretos");
+				   report.println("Um ou mais arquivos de teste tinham erros, mas estes foram sinalizados nos n√∫meros de linhas corretos");
 			   }
 			   else {
 				   compilerOk = false;
@@ -134,12 +134,12 @@ public class Comp {
 		   }
 		   if ( numSourceFiles -  numSourceFilesWithErros != 0  ) {
 			   if ( wereButShouldNotList.size() == 0 ) {
-				   report.println("O compilador n„o sinalizou nenhum erro que n„o deveria ter sinalizado");
+				   report.println("O compilador n√£o sinalizou nenhum erro que n√£o deveria ter sinalizado");
 			   }
 			   else {
 				   compilerOk = false;
 				   report.println("######################################################");
-				   report.println("Erros que foram sinalizados mas n„o deveriam ter sido:");
+				   report.println("Erros que foram sinalizados mas n√£o deveriam ter sido:");
 				   report.println();
 				   for (String s : this.wereButShouldNotList) {
 					   report.println(s);
@@ -151,12 +151,12 @@ public class Comp {
 		   if ( correctList.size() > 0 ) {
 			   report.println("######################################################");
 			   report.print("Em todos os testes abaixo, o compilador sinalizou o erro na linha correta (quando o teste tinha erros) ");
-			   report.print("ou n„o sinalizou o erro (quando o teste N√O tinha erros). Mas È necess·rio conferir se as ");
-			   report.print("mensagens emitidas pelo compilador s„o compatÌveis com as mensagens de erro sugeridas pelas chamadas aos ");
+			   report.print("ou n√£o sinalizou o erro (quando o teste N√ÉO tinha erros). Mas √© necess√°rio conferir se as ");
+			   report.print("mensagens emitidas pelo compilador s√£o compat√≠veis com as mensagens de erro sugeridas pelas chamadas aos ");
 			   report.print("metaobjetos dos testes. ");
 			   report.println();
 			   report.println();
-			   report.println("A lista abaixo contÈm o nome do arquivo de teste, a mensagem que ele sinalizou e a mensagem sugerida pelo arquivo de teste");
+			   report.println("A lista abaixo cont√©m o nome do arquivo de teste, a mensagem que ele sinalizou e a mensagem sugerida pelo arquivo de teste");
 			   report.println();
 			   for (String s : this.correctList ) {
 				   report.println(s);
@@ -165,9 +165,9 @@ public class Comp {
 		   }
 		   if ( compilerOk ) {
 			   if ( numSourceFiles == 1 ) 
-				   report.println("Para o caso de teste que vocÍ utilizou, o compilador est· correto");
+				   report.println("Para o caso de teste que voc√™ utilizou, o compilador est√° correto");
 			   else
-				   report.println("Para os casos de teste que vocÍ utilizou, o compilador est· correto");
+				   report.println("Para os casos de teste que voc√™ utilizou, o compilador est√° correto");
 
 		   }
 		   
@@ -201,6 +201,7 @@ public class Comp {
              numChRead = stream.read( input, 0, (int ) file.length() );
              if ( numChRead != file.length() ) {
                  outError.println("Read error");
+                 System.out.println("deu ruim");
                  stream.close();
                  return ;
              }

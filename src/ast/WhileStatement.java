@@ -4,7 +4,7 @@ public class WhileStatement extends Statement {
 
 	private Expr condition;
 	private CompositeStatement repeat;
-	
+	private Statement s;
 	
 	
 	public WhileStatement(Expr condition, CompositeStatement repeat) {
@@ -12,7 +12,12 @@ public class WhileStatement extends Statement {
 		this.condition = condition;
 		this.repeat = repeat;
 	}
-
+	
+	public WhileStatement(Expr condition, Statement repeat) {
+		super();
+		this.condition = condition;
+		this.s = repeat;
+	}
 
 
 	@Override

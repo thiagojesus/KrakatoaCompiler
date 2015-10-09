@@ -12,7 +12,7 @@ public class KraClass extends Type {
    public KraClass( String name, boolean _isFinal ) {
       super(name);
       this.isFinal = _isFinal;
-      this.methodHash = new HashMap<String, Method>();
+      this.methodList = new ArrayList<Method>();
       this.instanceVariableList = new InstanceVariableList();
    }
    
@@ -28,19 +28,23 @@ public class KraClass extends Type {
 	   }
    }
    
-   public Variable getInstanceVariable(String name){
+   public Variable getInstanceVariable(String name, boolean isStatic){
 	   if(instanceVariableList.getSize() !=0)
-		 return instanceVariableList.isThere(name);
+		 return instanceVariableList.isThere(name, isStatic);
 	   else
 		   return null;
    }
    
-   public Method getMethod(String name){
-	   return methodHash.get(name);
+   public Method getMethod(String name, boolean isStatic){
+	   for(Method m: methodList){
+		   if(m.getId().compareTo(name)==0 && m.isStatic()==isStatic)
+			   return m;
+	   }
+	   return null;
    }
    
    public Method addMethod(Method m){
-	   methodHash.put(m.getId(), m);
+	   methodList.add(m);
 	   return m;
    }
    
@@ -65,8 +69,8 @@ public class KraClass extends Type {
        }
        pw.printlnIdent("{");
        instanceVariableList.genKra(pw, putParenthesis);
-       for(String key: methodHash.keySet()){
-    	   methodHash.get(key).genKra(pw, putParenthesis);
+       for(Method m: methodList){
+    	   m.genKra(pw, putParenthesis);
        }
        pw.printlnIdent("}");
    }
@@ -76,19 +80,19 @@ public class KraClass extends Type {
    }
 
    public KraClass(String name, KraClass superclass, InstanceVariableList instanceVariableList,
-		boolean isFinal, HashMap<String, Method> methodHash) {
+		boolean isFinal, ArrayList<Method> methodList) {
 	super(name);
 	this.superclass = superclass;
 	this.instanceVariableList = instanceVariableList;
 	this.isFinal = isFinal;
-	this.methodHash = methodHash;
+	this.methodList = methodList;
 }
    
    public KraClass(String name, boolean isFinal, boolean isStatic){
 	   super(name);
 	   this.isFinal = isFinal;
 	   this.isStatic = isStatic;
-	   this.methodHash = new HashMap<String, Method>();
+	   this.methodList = new ArrayList<Method>();
 	   this.instanceVariableList = new InstanceVariableList();
    }
    
@@ -108,7 +112,7 @@ private KraClass superclass;
    private InstanceVariableList instanceVariableList;
    private boolean isFinal;
    private boolean isStatic;
-   private HashMap<String,Method> methodHash;
+   private ArrayList<Method> methodList;
    // m�todos p�blicos get e set para obter e iniciar as vari�veis acima,
    // entre outros m�todos
 }

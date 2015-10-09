@@ -93,6 +93,17 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 			kraClassList.add(classDec());
 			while ( lexer.token == Symbol.CLASS || lexer.token == Symbol.FINAL || lexer.token == Symbol.STATIC)
 				kraClassList.add(classDec());
+			
+			//verifico se existe a class Program
+			boolean check = false;
+			for(KraClass kC: kraClassList){
+				if(kC.getName().compareTo("Program")==0)
+					check = true;
+			}
+			if(!check){
+				signalError.show("Source must have a class Program");
+			}
+			
 			if ( lexer.token != Symbol.EOF ) {
 				signalError.show("End of file expected");
 			}
@@ -104,6 +115,7 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 			}
 			e.printStackTrace();
 		}
+		
 		return new Program(kraClassList, metaobjectCallList, compilationErrorList);
 	}
 
@@ -169,12 +181,10 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 
 	private KraClass classDec() {
 		KraClass superClass = new KraClass(null,false);
-		KraClass kraClass;
 		boolean isFinal = false;
 		boolean isPrivate = false;
 		boolean isStatic = false;
 		Method method;
-		HashMap methodHash = new HashMap<String, Method>();
 		InstanceVariableList varList = new InstanceVariableList();
 		// Note que os m�todos desta classe n�o correspondem exatamente �s
 		// regras
@@ -245,10 +255,12 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 
 			if(lexer.token == Symbol.FINAL){
 				isFinalMethod = true;
+				lexer.nextToken();
 			}
 
 			if(lexer.token == Symbol.STATIC){
 				isStaticMethod = true;
+				lexer.nextToken();
 			}
 
 			switch (lexer.token) {
@@ -289,12 +301,13 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 				}
 				
 				//o metodo não pode ter o mesmo nome de uma instância
-				Variable inst = currentClass.getInstanceVariable(name);
+				Variable inst = currentClass.getInstanceVariable(name,false);
 				if(inst != null){
 					signalError.show("Previously declared instance with this name");
 				}
 				//metodos não podem ter o mesmo nome
-				if(currentClass.getMethod(name)!= null){
+				Method comp = null;
+				if((comp = currentClass.getMethod(name,isStaticMethod))!= null){ 
 					signalError.show("Redeclaration of method "+name);
 				}
 				if(qualifier == Symbol.PRIVATE){
@@ -306,6 +319,9 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 				//crio o que eu já validei do método
 				m = new Method(name, t, qualifier, isStaticMethod, isFinalMethod, currentClass);
 				currentMethod = cClass.addMethod(m);
+				//metodo final em classe final não pode
+				if(currentClass.isFinal() && currentMethod.isFinal())
+					signalError.show("final method in final class");
 				//boolean para verificar se o metodo tem pelo menos um retorno
 				hasReturn = false;
 				//chamo o methodDec pra validar o resto
@@ -314,15 +330,16 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 
 			else if ( qualifier != Symbol.PRIVATE )
 				signalError.show("Attempt to declare a public instance variable");
-			else
+			else{
 				varList = instanceVarDec(t, name, isStaticMethod);
-			cClass.addInstances(varList, isStaticMethod);
+				cClass.addInstances(varList, isStaticMethod);
+			}
 		}
 		if ( lexer.token != Symbol.RIGHTCURBRACKET )
 			signalError.show("public/private or \"}\" expected");
 		//se a classe atual é Program, procuro um método run
 		if(currentClass.getName().compareTo("Program") == 0){
-			if(currentClass.getMethod("run") == null){
+			if(currentClass.getMethod("run",false) == null){
 				signalError.show("Class program must have a run method");
 			}
 		}
@@ -334,10 +351,13 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 	private InstanceVariableList instanceVarDec(Type type, String name, boolean isStatic) {
 		// InstVarDec ::= [ "static" ] "private" Type IdList ";"
 		String variableName;
+		Variable v = null;
 		InstanceVariableList varList = new InstanceVariableList();
-		if(currentClass.getInstanceVariable(name)==null){
-			varList.addElement(new InstanceVariable(name, type,currentClass));
+		if((v = currentClass.getInstanceVariable(name,false))==null || v.isStatic() != isStatic){
+			if((v = currentClass.getInstanceVariable(name,true))==null || v.isStatic() != isStatic)
+				varList.addElement(new InstanceVariable(name, type,currentClass));
 		}else{
+			if((v.isStatic() && isStatic==true) || (!v.isStatic() && isStatic==false))
 			signalError.show("Duplicate instance variable");
 		}
 		while (lexer.token == Symbol.COMMA) {
@@ -345,7 +365,7 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 			if ( lexer.token != Symbol.IDENT )
 				signalError.show("Identifier expected");
 			variableName = lexer.getStringValue();
-			if(currentClass.getInstanceVariable(variableName)==null){
+			if(currentClass.getInstanceVariable(variableName,false)==null){
 				varList.addElement(new InstanceVariable(variableName, type,currentClass));
 			}else{
 				signalError.show("Duplicate instance variable");
@@ -384,7 +404,7 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 		//se ele não for nulo e final, não pode
 		//se o retorno do pai for diferente, também não pode
 		//se a quantidade de parametros e/ou seus tipos não baterem, também não pode
-		if(superM != null){
+		if(superM != null && !superM.isStatic()){
 			if(superM.isFinal()){
 				signalError.show("Can't redefine a final method in super class");
 			}
@@ -452,7 +472,7 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 	private Method findInSuperClass(){
 		KraClass superClass = currentClass.getSuper();
 		while(superClass != null){
-			Method m = superClass.getMethod(currentMethod.getId());
+			Method m = superClass.getMethod(currentMethod.getId(),currentMethod.isStatic());
 			if(m != null){
 				return m;
 			}
@@ -463,8 +483,10 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 	//atribuicao e declaração são muito parecidos, por isso retorno um assignexprlocaldec
 	private Expr localDec() {
 		// LocalDec ::= Type IdList ";"
-		ArrayList<Variable>v = new ArrayList<Variable>();
 		Type type = type();
+		if(type == Type.nullType)
+			signalError.show("Type "+ lexer.getStringValue() + " was not found");
+		ArrayList<Variable>v = new ArrayList<Variable>();
 		if ( lexer.token != Symbol.IDENT ) signalError.show("Identifier expected");
 		String name = lexer.getStringValue();
 		Variable var = new Variable(name, type);
@@ -522,7 +544,7 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 
 		t = type();
 		if(lexer.token != Symbol.IDENT){
-			signalError.show(signalError.ident_expected);
+			signalError.show(SignalError.ident_expected);
 		}
 		name = lexer.getStringValue();
 		//verifico se tem alguem com o mesmo nome
@@ -555,7 +577,7 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 			break;
 		case IDENT:
 			if(!isType(lexer.getStringValue())) signalError.show(lexer.getStringValue()+ " is not a type");
-			result = null;
+			result = symbolTable.getInGlobal(lexer.getStringValue());
 			break;
 		default:
 			signalError.show("Type expected");
@@ -568,16 +590,22 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 	private CompositeStatement compositeStatement() {
 		ArrayList<Statement> s = new ArrayList<Statement>();
 		lexer.nextToken();
-		s.add(statement());
-		while(lexer.token != Symbol.RIGHTCURBRACKET){
+		if(lexer.token == Symbol.RIGHTCURBRACKET){
+			s.add(new NullStatement());
 			lexer.nextToken();
+		}else{
 			s.add(statement());
+			while(lexer.token != Symbol.RIGHTCURBRACKET){
+				//lexer.nextToken();
+				s.add(statement());
+			}
+				
+			if ( lexer.token != Symbol.RIGHTCURBRACKET )
+				signalError.show("} expected");
+			else
+				lexer.nextToken();
 		}
-			
-		if ( lexer.token != Symbol.RIGHTCURBRACKET )
-			signalError.show("} expected");
-		else
-			lexer.nextToken();
+		
 		return new CompositeStatement(s);
 	}
 
@@ -672,6 +700,7 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 			/*
 			 * AssignExprLocalDec ::= Expression [ ``$=$'' Expression ]
 			 */
+			
 			Expr left = expr();
 			Expr right = null;
 			if ( lexer.token == Symbol.ASSIGN ) {
@@ -680,7 +709,7 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 				//se o tipo for uma classe, temos que checar a compatibilidade entre as expressões
 				if(isType(left.getType().getName())){
 					//a segunda não pode ser null
-					if(right.getType().getName().compareTo("null") != 0){
+					if(right.getType() != Type.nullType){
 						//checo os tipos
 						boolean check = checkClassType(left.getType(), right.getType());
 						//se voltar false, não são compatíveis
@@ -688,10 +717,16 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 							signalError.show("The type of the right expression can't be converted to the first expression's type");
 						}
 
+					}else{
+						//não faço nada, objetos podem receber null
 					}
 
 				}else{
 					//se os tipos são simples, só comparo mesmo
+					//primeiro faço o caso do null
+					if(left.getType().getName().compareTo(right.getType().getName()) != 0 && right.getType() == Type.nullType)
+						signalError.show("'null' cannot be assigned to a variable of a basic type");
+					//senão, os dois são tipos definidos
 					if(left.getType().getName().compareTo(right.getType().getName()) != 0){
 						signalError.show("Types do not match");
 					}
@@ -733,6 +768,7 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 	private WhileStatement whileStatement() {
 		Expr condition;
 		CompositeStatement repeat = null;
+		Statement s = null;
 		//entrei num while, incremento
 		nested++;
 		lexer.nextToken();
@@ -745,10 +781,16 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 		}
 		if ( lexer.token != Symbol.RIGHTPAR ) signalError.show(") expected");
 		lexer.nextToken();
-		repeat = compositeStatement();
+		if(lexer.token== Symbol.LEFTCURBRACKET)
+			repeat = compositeStatement();
+		else
+			s = statement();
 		//saindo do while
 		nested--;
-		return new WhileStatement(condition, repeat);
+		if(repeat != null)
+			return new WhileStatement(condition, repeat);
+		else
+			return new WhileStatement(condition, s);
 	}
 
 	private IfStatement ifStatement() {
@@ -814,7 +856,7 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 			String name = lexer.getStringValue();
 			//se é this, recebo a instancia
 			if(self){
-				v = currentClass.getInstanceVariable(name);
+				v = currentClass.getInstanceVariable(name,false);
 			}else{
 				if(isType(name)){
 					//chamada estatica
@@ -824,12 +866,12 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 					if(lexer.token != Symbol.DOT) signalError.show(". expected");
 					lexer.nextToken();
 					String sName = lexer.getStringValue();
-					v = currentClass.getInstanceVariable(sName);
+					v = currentClass.getInstanceVariable(sName,true);
 					if(v==null || !v.isStatic())
 						signalError.show("Could not find static variable "+ sName);
 				}else{
 					if(symbolTable.getInLocal(name)==null){
-						v = currentClass.getInstanceVariable(name);
+						v = currentClass.getInstanceVariable(name,false);
 						//não achou
 						if(v == null){
 							signalError.show("Can't find reference");
@@ -958,7 +1000,7 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 						check = checkClassType(right.getType(), left.getType());
 
 						if(!check)
-							signalError.show("Trying to compare different types");
+							signalError.show("Trying to compare different types will always be false");
 					}
 
 				}else{
@@ -1046,7 +1088,7 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 			//booleanos também não
 			if(expr.getType().getName().compareTo("boolean")==0)
 				signalError.show("booleans can't have unary operations");
-			return new SignalExpr(op, factor());
+			return new SignalExpr(op, expr);
 		}
 		else
 			return factor();
@@ -1157,6 +1199,8 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 			 */
 		case SUPER:
 			// "super" "." Id "(" [ ExpressionList ] ")"
+			if(currentClass.getName().compareTo("Program")==0)
+				signalError.show("Class Program does not have a superclass");
 			lexer.nextToken();
 			if ( lexer.token != Symbol.DOT ) {
 				signalError.show("'.' expected");
@@ -1173,8 +1217,8 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 			KraClass sC = currentClass.getSuper();
 			Method m = null;
 			while(sC != null){
-				m = sC.getMethod(messageName);
-				if(m == null){
+				m = sC.getMethod(messageName,false);
+				if(m == null || m.isPrivate()){
 					sC = sC.getSuper();
 				}else
 					break;
@@ -1183,8 +1227,8 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 			lexer.nextToken();
 			exprList = realParameters();
 			//se m é null, não achei o metodo
-			if(m==null)
-				signalError.show("Could not find method "+messageName);
+			if(m==null || m.isPrivate())
+				signalError.show("Could not find public method "+messageName + " in any of the superclasses");
 			else{
 				if(exprList != null){
 					//se o tamanho da lista de parametros da mensagem não bate com o método, sinaliza erro
@@ -1218,16 +1262,19 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 			 *                 Id "." Id "(" [ ExpressionList ] ")" |
 			 *                 Id "." Id "." Id "(" [ ExpressionList ] ")" |
 			 */
-
 			String firstId = lexer.getStringValue();
 			lexer.nextToken();
 			if ( lexer.token != Symbol.DOT ) {
 				// Id
 				// retorne um objeto da ASA que representa um identificador
 				Variable v = null;
+				//pode ser um método jogado
+				if(lexer.token == Symbol.LEFTPAR){
+					signalError.show("'.' or '=' expected after an identifier");
+				}
 				v = symbolTable.getInLocal(firstId);
 				if(v==null){
-					v = currentClass.getInstanceVariable(firstId);
+					v = currentClass.getInstanceVariable(firstId,false);
 					if(v!=null)
 						signalError.show("Instance variable must use the keyword this.");
 				}
@@ -1254,11 +1301,11 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 						 * Contudo, se vari�veis est�ticas n�o estiver nas especifica��es,
 						 * sinalize um erro neste ponto.
 						 */
-						KraClass kC = symbolTable.getInGlobal(ident);
+						KraClass kC = symbolTable.getInGlobal(firstId);
 						//se não encontrou nada, não pode existir chamada estática
 						if(kC == null)
-							signalError.show("The class "+ ident + " does not exist");
-						Variable var = kC.getInstanceVariable(ident);
+							signalError.show("The class "+ firstId + " does not exist");
+						Variable var = kC.getInstanceVariable(ident,true);
 						//se não achou a variavel estatica, lança erro
 						if(var == null || !var.isStatic())
 							signalError.show("can't find static instance");
@@ -1266,7 +1313,7 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 						if ( lexer.token != Symbol.IDENT )
 							signalError.show("Identifier expected");
 						messageName = lexer.getStringValue();
-						Method msg = kC.getMethod(messageName);
+						Method msg = kC.getMethod(messageName,true);
 						if(msg == null || !msg.isStatic())
 							signalError.show("can't find static method");
 						lexer.nextToken();
@@ -1281,7 +1328,7 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 						KraClass KraC = null;
 						boolean isStatic = false;
 						v = symbolTable.getInLocal(firstId);
-						v1 = currentClass.getInstanceVariable(firstId);
+						v1 = currentClass.getInstanceVariable(firstId,false);
 						if(v != null || (v1 != null && !v1.isStatic()) ){
 							if(v==null)
 								v = v1;
@@ -1290,19 +1337,19 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 								signalError.show("The first identifier must be a class type to call methods");
 
 							KraClass c = symbolTable.getInGlobal(v.getType().getName());
-							mtd = c.getMethod(ident);
+							mtd = c.getMethod(ident,false);
 							if(mtd == null || mtd.isStatic() ){
 								c = c.getSuper();
 								while(c != null){
-									mtd = c.getMethod(ident);
-									if(mtd == null || !mtd.isStatic()){
+									mtd = c.getMethod(ident,false);
+									if(mtd == null){
 										c = c.getSuper();
 									}else
 										break;
 								}
 							}
-							if(mtd == null)
-								signalError.show("can't find method");
+							if(mtd == null || mtd.isStatic())
+								signalError.show("can't find method "+ ident + " in Class "+ v.getType().getName() + " or it's superclasses");
 							else{
 								if(mtd.isPrivate())
 									signalError.show("Can't call private method from class "+ c.getName());
@@ -1310,7 +1357,7 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 						}else{
 							isStatic = true;
 							KraC = symbolTable.getInGlobal(firstId);
-							mtd = KraC.getMethod(ident);
+							mtd = KraC.getMethod(ident,true);
 							if(mtd == null || !mtd.isStatic())
 								signalError.show("the static method does not exist");
 							else{
@@ -1334,7 +1381,7 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 						KraClass kc = symbolTable.getInGlobal(firstId);
 						if(kc == null)
 							signalError.show("Identifier is not a class");
-						Variable v1 = kc.getInstanceVariable(ident);
+						Variable v1 = kc.getInstanceVariable(ident,true);
 						if(v1==null || !v1.isStatic())
 							signalError.show("Static instance does not belong in class "+ kc.getName());
 						return new MessageSendToVariable(kc, v1);
@@ -1373,11 +1420,11 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 					 * Confira se a classe corrente possui um m�todo cujo nome �
 					 * 'ident' e que pode tomar os par�metros de ExpressionList
 					 */
-					Method mth = currentClass.getMethod(ident);
-					if(mth == null || !mth.isStatic()){
+					Method mth = currentClass.getMethod(ident,false);
+					if(mth == null || mth.isStatic()){
 						KraClass find = currentClass.getSuper();
 						while(find != null){
-							mth = find.getMethod(ident);
+							mth = find.getMethod(ident,false);
 							if(mth==null || !mth.isStatic())
 								find = find.getSuper();
 							else
@@ -1405,7 +1452,7 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 							if(isType(ex.getType().getName())){
 								boolean check = checkClassType(v.getType(), ex.getType());
 								if(!check)
-									signalError.show("method has a different type");
+									signalError.show("the type of the parameter(s) does not match");
 							}else{
 								if(ex.getType().getName().compareTo(v.getType().getName())!=0)
 									signalError.show("method has a different type");
@@ -1421,15 +1468,15 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 						signalError.show("Identifier expected");
 					String msg = lexer.getStringValue();
 					Method mto = null;
-					Variable v = currentClass.getInstanceVariable(ident);
+					Variable v = currentClass.getInstanceVariable(ident,false);
 					if(v != null && !v.isStatic()){
 						if(isType(v.getType().getName())){
 							KraClass Sc = symbolTable.getInGlobal(v.getType().getName());
-							mto = Sc.getMethod(msg);
+							mto = Sc.getMethod(msg,false);
 							if(mto==null || mto.isStatic()){
 								Sc = Sc.getSuper();
 								while(Sc != null){
-									mto = Sc.getMethod(msg);
+									mto = Sc.getMethod(msg,false);
 									if(mto == null || mto.isStatic() || mto.isPrivate())
 										Sc = Sc.getSuper();
 									else
@@ -1474,7 +1521,8 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 					 * confira se a classe corrente realmente possui uma
 					 * vari�vel de inst�ncia 'ident'
 					 */
-					Variable v = currentClass.getInstanceVariable(ident);
+					//Preciso modificar todas as chamadas de getInstanceVariable pra procurar ou não por static
+					Variable v = currentClass.getInstanceVariable(ident,false);
 					if(v == null || v.isStatic())
 						signalError.show("There is no instance "+ident+" in class "+currentClass.getName());
 					if(currentMethod.isStatic())
