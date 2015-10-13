@@ -1,0 +1,101 @@
+class A {
+   public int m1(   boolean ok;
+) {
+         return          0   }
+   public void m2() {
+   }
+   public char * m3(   String s;
+   boolean ok;
+) {
+         return A   }
+   public char * m4(   int i;
+   boolean ok;
+) {
+         return Am4   }
+}
+class B extends A {
+   public int m1(   boolean ok;
+) {
+         return          1   }
+   public void m2() {
+   }
+   public int mB() {
+         return          1   }
+}
+class C extends B {
+   public int m1(   boolean ok;
+) {
+         return          2   }
+   public char * m4(   int i;
+   boolean ok;
+) {
+         return C   }
+   public char * m5() {
+         return finally   }
+}
+final class D extends A {
+}
+final class E extends A {
+   public int m1(   boolean ok;
+) {
+         return          5   }
+   public void m2() {
+   }
+   public char * m4(   int i;
+   boolean ok;
+) {
+         return Em4   }
+}
+class Program {
+   public void run() {
+      C c;
+      c = new C();
+      write(,      c.m1(,1);
+);
+      c.m2();
+      write(,      c.m3(,ok,0);
+);
+      write(,      c.m4(,      0,0);
+);
+      write(,      c.m5();
+);
+      write(, +       1);
+      B b;
+      b = new B();
+      write(,      b.m1(,1);
+);
+      b.m2();
+      write(,      b.m3(,ok,0);
+);
+      write(,      b.m4(,      0,0);
+);
+      write(, +       1);
+      A a;
+      a = new A();
+      write(,      a.m1(,1);
+);
+      a.m2();
+      write(,      a.m3(,ok,0);
+);
+      write(,      a.m4(,      0,0);
+);
+      D d;
+      d = new D();
+      write(,      d.m1(,1);
+);
+      d.m2();
+      write(,      d.m3(,ok,0);
+);
+      write(,      d.m4(,      0,0);
+);
+      E e;
+      e = new E();
+      write(,      e.m1(,1);
+);
+      e.m2();
+      write(,      e.m3(,ok,0);
+);
+      write(,      e.m4(,      0,0);
+);
+   }
+}

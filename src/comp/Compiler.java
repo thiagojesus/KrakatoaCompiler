@@ -1,3 +1,7 @@
+/*
+ * @author Thiago Martins de Jesus 380385
+ * @author Vinnícius Ferreira da Silva 380032
+ * */
 package comp;
 
 import ast.*;
@@ -695,6 +699,7 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 			 * LocalDec ::= Type IdList ``;''
 			 */
 			vL = localDec();
+			return new AssignExprLocalDec(vL);
 		}
 		else {
 			/*
@@ -751,7 +756,7 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 				return new AssignExprLocalDec(left);
 			}
 		}
-		return null;
+		
 	}
 
 	private ExprList realParameters() {
@@ -896,7 +901,7 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 			signalError.show("can't read boolean");
 		}
 
-		if(isType(v.getType().getName())){
+		if(isType(v.getType().getName()) && !v.isStatic()){
 			signalError.show("can't read objects");
 		}
 		if ( lexer.token != Symbol.SEMICOLON )
@@ -920,8 +925,17 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 			if(aux != null){
 				if(aux.getType().getName().compareTo("boolean") == 0)
 					signalError.show("Can't write boolean.");
-				if(isType(aux.getType().getName()))
-					signalError.show("Can't write a object");
+				if(isType(aux.getType().getName())){
+					try {
+						MessageSendToVariable mV = (MessageSendToVariable)aux;
+						if(!mV.getVar().isStatic())
+							signalError.show("Can't write a object");
+					} catch (ClassCastException e) {
+						signalError.show("Can't write a object");
+					}
+				
+				}
+					
 			}
 		}
 		if ( lexer.token != Symbol.SEMICOLON )
@@ -1315,7 +1329,9 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 						messageName = lexer.getStringValue();
 						Method msg = kC.getMethod(messageName,true);
 						if(msg == null || !msg.isStatic())
-							signalError.show("can't find static method");
+							msg = kC.getMethod(messageName, false);
+							if(msg == null)
+								signalError.show("can't find static method");
 						lexer.nextToken();
 						exprList = this.realParameters();
 						return new MessageSendToVariable(kC, var, msg, exprList);

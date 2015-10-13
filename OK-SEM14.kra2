@@ -1,0 +1,26 @@
+class A {
+}
+class B extends A {
+}
+class Program {
+   public void run() {
+      A a;
+      A a2;
+      B b;
+      a = ;
+      b = ;
+      a2 = ;
+         if ( a == b ) 
+{
+         write(,         0);
+         }
+         if ( b == a ) 
+{
+         write(,         1);
+         }
+         if ( a == a2 ) 
+{
+         write(,         2);
+         }
+   }
+}

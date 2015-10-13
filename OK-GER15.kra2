@@ -1,0 +1,170 @@
+class A {
+private    int i;
+;
+private    int j;
+;
+   private void p() {
+      write(,      this.private       int i;
+;
+);
+   }
+   private void q() {
+      write(,      this.private       int j;
+;
+);
+   }
+   public void init_A() {
+      this.private       int i;
+;
+ =       1      this.private       int j;
+;
+ =       2   }
+   public void call_p() {
+      this.      private void p() {
+         write(,         this.private          int i;
+;
+);
+      }
+   }
+   public void call_q() {
+      this.      private void q() {
+         write(,         this.private          int j;
+;
+);
+      }
+   }
+   public void r() {
+      write(,      this.private       int i;
+;
+);
+   }
+   public void s() {
+      write(,      this.private       int j;
+;
+);
+   }
+}
+class B extends A {
+private    int i;
+;
+private    int j;
+;
+   private void p() {
+      write(,      this.private       int i;
+;
+);
+   }
+   private void q() {
+      write(,      this.private       int j;
+;
+);
+   }
+   public void init_B() {
+      this.private       int i;
+;
+ =       3      this.private       int j;
+;
+ =       4   }
+   public void call_p() {
+      this.      private void p() {
+         write(,         this.private          int i;
+;
+);
+      }
+   }
+   public void call_q() {
+      this.      private void q() {
+         write(,         this.private          int j;
+;
+);
+      }
+   }
+   public void r() {
+      write(,      this.private       int i;
+;
+);
+   }
+   public void s() {
+      write(,      this.private       int j;
+;
+);
+   }
+}
+class C extends A {
+private    int i;
+;
+private    int j;
+;
+   private void p() {
+      write(,      this.private       int i;
+;
+);
+   }
+   private void q() {
+      write(,      this.private       int j;
+;
+);
+   }
+   public void init_C() {
+      this.private       int i;
+;
+ =       5      this.private       int j;
+;
+ =       6   }
+   public void call_p() {
+      this.      private void p() {
+         write(,         this.private          int i;
+;
+);
+      }
+   }
+   public void call_q() {
+      this.      private void q() {
+         write(,         this.private          int j;
+;
+);
+      }
+   }
+   public void r() {
+      write(,      this.private       int i;
+;
+);
+   }
+   public void s() {
+      write(,      this.private       int j;
+;
+);
+   }
+}
+class Program {
+   public void run() {
+      A a;
+      B b;
+      C c;
+      writeln(,);
+      writeln(,Ok-ger15);
+      writeln(,The output should be :);
+      writeln(,1 2 1 2 3 4 3 4 5 6 5 6);
+      a = new A();
+      a.init_A();
+      a.call_p();
+      a.call_q();
+      a.r();
+      a.s();
+      b = new B();
+      b.init_B();
+      b.init_A();
+      b.call_p();
+      b.call_q();
+      b.r();
+      b.s();
+      c = new C();
+      c.init_C();
+      c.init_A();
+      c.init_C();
+      c.call_p();
+      c.call_q();
+      c.r();
+      c.s();
+   }
+}

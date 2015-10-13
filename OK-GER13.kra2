@@ -1,0 +1,47 @@
+class A {
+private    int n;
+;
+   public int get() {
+         return          this.private          int n;
+;
+   }
+   public void set(   int n;
+) {
+      this.private       int n;
+;
+ =       n   }
+   public void m1() {
+      write(,      this.private       int n;
+;
+);
+   }
+}
+class B extends A {
+   public void m2() {
+   }
+}
+class C extends B {
+   public void m1() {
+      write(,      8);
+   }
+   public void teste() {
+      super.m1();
+   }
+}
+class D extends C {
+   public void m1() {
+      write(,      9);
+   }
+}
+class Program {
+   public void run() {
+      D d;
+      writeln(,);
+      writeln(,Ok-ger09);
+      writeln(,The output should be :);
+      writeln(,0);
+      d = new D();
+      d.set(,      0);
+      d.teste();
+   }
+}

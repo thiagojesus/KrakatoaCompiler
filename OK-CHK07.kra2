@@ -1,0 +1,132 @@
+class Person {
+private    String course;
+;
+private    int number;
+;
+private    int age;
+;
+private    String name;
+;
+   public char * getCourse() {
+         return          this.private          String course;
+;
+   }
+   public void setCourse(   String course;
+) {
+      this.private       String course;
+;
+ =       course   }
+   public int getNumber() {
+         return          this.private          int number;
+;
+   }
+   public void setNumber(   int number;
+) {
+      this.private       int number;
+;
+ =       number   }
+   public void init(   String name;
+   int age;
+) {
+      this.private       String name;
+;
+ =       name      this.private       int age;
+;
+ =       age   }
+   public char * getName() {
+         return          this.private          String name;
+;
+   }
+   public int getAge() {
+         return          this.private          int age;
+;
+   }
+   public void print() {
+      write(,Name = ,      this.private       String name;
+;
+);
+      write(,Age = ,      this.private       int age;
+;
+);
+   }
+}
+class Group {
+private    Person first;
+;
+private    Person second;
+;
+   public void set(   Person first;
+   Person second;
+) {
+      this.private       Person first;
+;
+ =       first      this.private       Person second;
+;
+ =       second   }
+   public Person getFirst() {
+         return          this.private          Person first;
+;
+   }
+   public Person getSecond() {
+         return          this.private          Person second;
+;
+   }
+   public void print() {
+      write(,First: ,);
+      write(,Second: ,);
+   }
+}
+class University {
+private    String name;
+;
+private    int numberOfStudents;
+;
+private    String city;
+;
+   public void init(   String name;
+   String city;
+   int numberOfStudents;
+) {
+      this.private       String name;
+;
+ =       name      this.private       String city;
+;
+ =       city      this.private       int numberOfStudents;
+;
+ =       numberOfStudents   }
+   public void print() {
+      write(,      this.private       String name;
+;
+);
+      write(,      this.private       String city;
+;
+);
+      write(,      this.private       int numberOfStudents;
+;
+);
+   }
+}
+class Program {
+   public void run() {
+      University s;
+      Person joao;
+      Person maria;
+      Group g;
+      s = new University();
+      s.init(,UFSCar,Sao Carlos,      7000);
+      s.print();
+      joao = new Person();
+      joao.init(,Joao,      21);
+      joao.setCourse(,EnC);
+      joao.setNumber(,      6729);
+      maria = new Person();
+      maria.init(,Maria,      20);
+      maria.setCourse(,Fisioterapia);
+      maria.setNumber(,      8607);
+      joao.print();
+      maria.print();
+      g = new Group();
+      g.set(,      joao,      maria);
+      g.print();
+   }
+}

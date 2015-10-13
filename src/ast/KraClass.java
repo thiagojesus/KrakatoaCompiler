@@ -1,3 +1,7 @@
+/*
+ * @author Thiago Martins de Jesus 380385
+ * @author Vinnícius Ferreira da Silva 380032
+ * */
 package ast;
 
 import java.util.ArrayList;
@@ -63,16 +67,20 @@ public class KraClass extends Type {
 	   if(isFinal){
 		   pw.print("final ");
 	   }
-	   pw.print("class "+this.getCname());       
+	   if(isStatic)
+		   pw.print(" static ");
+	   pw.print("class "+this.getName());       
        if(superclass != null){
            pw.print(" extends "+superclass.getCname());
        }
-       pw.printlnIdent("{");
+       pw.println(" {");
+       pw.add();
        instanceVariableList.genKra(pw, putParenthesis);
        for(Method m: methodList){
     	   m.genKra(pw, putParenthesis);
        }
-       pw.printlnIdent("}");
+       pw.sub();
+       pw.println("}");
    }
    
    public KraClass getSuperClass(){

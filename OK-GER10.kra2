@@ -1,0 +1,60 @@
+class A {
+private    int k;
+;
+   public void m1(   int n;
+) {
+      this.private       int k;
+;
+ =       1      write(,      this.private       int k;
+;
+,      n);
+   }
+   public int getK() {
+         return          this.private          int k;
+;
+   }
+}
+class B extends A {
+private    int k;
+;
+   public void m2(   int n;
+) {
+      this.private       int k;
+;
+ =       2      super.m1(,      1);
+      write(,      this.private       int k;
+;
+,      n);
+   }
+   public int getK() {
+         return          this.private          int k;
+;
+   }
+}
+class C extends B {
+   public void m3(   int n;
+) {
+      super.m2(,      2);
+      write(,      3,      n);
+   }
+   public void m4(   int n;
+) {
+      this.      public void m3(      int n;
+) {
+         super.m2(,         2);
+         write(,         3,         n);
+      }
+      write(,      4,      n);
+   }
+}
+class Program {
+   public void run() {
+      C c;
+      writeln(,);
+      writeln(,Ok-ger10);
+      writeln(,The output should be :);
+      writeln(,1 1 2 2 3 3 4 4);
+      c = new C();
+      c.m4(,      4);
+   }
+}

@@ -1,0 +1,36 @@
+class A {
+private    int n;
+;
+   public void set(   int n;
+) {
+      this.private       int n;
+;
+ =       n   }
+   public int get() {
+         return          this.private          int n;
+;
+   }
+}
+class Program {
+private    A a;
+;
+   public void print() {
+      write(,);
+   }
+   private void set(   A a;
+) {
+      this.private       A a;
+;
+ =       a   }
+   public A get() {
+         return          this.private          A a;
+;
+   }
+   public void run() {
+      writeln(,);
+      writeln(,Ok-ger21);
+      writeln(,The output should be :);
+      writeln(,0);
+      write(,0);
+   }
+}

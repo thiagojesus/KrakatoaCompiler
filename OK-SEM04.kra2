@@ -1,0 +1,10 @@
+class Program {
+   public void run() {
+      int a;
+      int b;
+      boolean e;
+      boolean f;
+      a =       1      b =       1      e = 1      f = 0         if ( (((((((a == b         ) && (a ==          1         )) && (         1 == b         )) && (a != b         )) && (e == f         )) && (1 == f         )) && (e != f         )) && (1 != f         ) ) 
+         write(,impossivel);
+   }
+}

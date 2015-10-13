@@ -1,3 +1,7 @@
+/*
+ * @author Thiago Martins de Jesus 380385
+ * @author Vinnícius Ferreira da Silva 380032
+ * */
 package ast;
 
 import java.util.*;
@@ -22,10 +26,9 @@ public class ExprList {
         }
     }
     
-    public void genK(PW pw, boolean putParenthesis){
-       exprList.remove(0).genKra(pw, putParenthesis);
-        for(Expr exp : exprList){
-            pw.print(",");
+    public void genKra(PW pw, boolean putParenthesis){
+    	for(Expr exp : exprList){
+    		pw.print(",");
             exp.genKra(pw, putParenthesis);
         }
     }

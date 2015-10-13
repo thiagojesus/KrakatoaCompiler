@@ -1,3 +1,7 @@
+/*
+ * @author Thiago Martins de Jesus 380385
+ * @author Vinnícius Ferreira da Silva 380032
+ * */
 package ast;
 
 public class InstanceVariable extends Variable {
@@ -12,7 +16,7 @@ public class InstanceVariable extends Variable {
         if(staticFlag){
             pw.print("static ");
         }
-        pw.print("private");
+        pw.print("private ");
         super.genKra(pw, putParenthesis);
         pw.println(";");
         

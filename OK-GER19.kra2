@@ -1,0 +1,38 @@
+class A {
+static private    int n;
+;
+private    int n;
+;
+   public int get() {
+         return          A.n;
+   }
+   public int get() {
+         return          this.private          int n;
+;
+   }
+   public void set(   int n;
+) {
+      A.n;
+ =       n   }
+   public void set(   int n;
+) {
+      this.private       int n;
+;
+ =       n   }
+}
+class Program {
+   public void run() {
+      A a;
+      writeln(,);
+      writeln(,Ok-ger19);
+      writeln(,The output should be: );
+      writeln(,0 1);
+      a = new A();
+      a.set(,      0);
+      A.set(,      1);
+      write(,      a.get();
+);
+      write(,      A.get();
+);
+   }
+}

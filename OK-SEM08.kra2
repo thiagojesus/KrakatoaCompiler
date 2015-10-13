@@ -1,0 +1,41 @@
+class A {
+private    int i;
+;
+   public void put(   int x;
+   int y;
+   boolean ok;
+) {
+         if ( (x > y         ) && ok ) 
+{
+         this.private          int i;
+;
+ =          0         }
+   }
+   public int get() {
+         return          this.private          int i;
+;
+   }
+   public void set(   int i;
+) {
+      this.private       int i;
+;
+ =       i   }
+}
+class B extends A {
+   public void put(   int a;
+   int b;
+   boolean c;
+) {
+         if ( ((a + b         ) <          1         ) && !c ) 
+{
+         write(,         0);
+         }
+   }
+}
+class Program {
+   public void run() {
+      B b;
+      b = new B();
+      b.put(,      1,      2,1);
+   }
+}

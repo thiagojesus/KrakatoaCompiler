@@ -1,3 +1,7 @@
+/*
+ * @author Thiago Martins de Jesus 380385
+ * @author Vinnícius Ferreira da Silva 380032
+ * */
 package ast;
 
 public class Variable {
@@ -14,9 +18,8 @@ public class Variable {
     }
     
     public void genKra(PW pw, boolean putParenthesis){
-    	pw.print("private");
-        pw.print(type.getName());
-        pw.printIdent(name);
+        pw.printIdent(type.getName()+" ");
+        pw.print(name);
         pw.println(";");
     }
     

@@ -2,16 +2,10 @@ Relatório do Compilador
 
 0 de um total de 134 erros que deveriam ser sinalizados não o foram (0%)
 0 erros foram sinalizados na linha errada (0%)
-2 erros foram sinalizados em 75 arquivos sem erro (2%)
+0 erros foram sinalizados em 75 arquivos sem erro (0%)
 Todos os erros que deveriam ter sido sinalizados o foram
 Um ou mais arquivos de teste tinham erros, mas estes foram sinalizados nos números de linhas corretos
-######################################################
-Erros que foram sinalizados mas não deveriam ter sido:
-
-OK-SEM01.KRA, 7, can't read objects
-
-OK-SEM19.KRA, 33, can't find static method
-
+O compilador não sinalizou nenhum erro que não deveria ter sinalizado
 ######################################################
 Em todos os testes abaixo, o compilador sinalizou o erro na linha correta (quando o teste tinha erros) ou não sinalizou o erro (quando o teste NÃO tinha erros). Mas é necessário conferir se as mensagens emitidas pelo compilador são compatíveis com as mensagens de erro sugeridas pelas chamadas aos metaobjetos dos testes. 
 
@@ -687,3 +681,4 @@ The compiler message was: ") expected"
 The 'ce' message is:      "')' expected"
 
 
+Para os casos de teste que você utilizou, o compilador está correto

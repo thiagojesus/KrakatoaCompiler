@@ -1,3 +1,7 @@
+/*
+ * @author Thiago Martins de Jesus 380385
+ * @author Vinnícius Ferreira da Silva 380032
+ * */
 package ast;
 
 public class WriteStatement extends Statement {
@@ -17,16 +21,14 @@ public class WriteStatement extends Statement {
 
 	@Override
 	public void genKra(PW pw, boolean putParenthesis) {
-		pw.add();
 		if(isLn){
 			pw.printIdent("writeln");
 		}else{
 			pw.printIdent("write");
 		}
         pw.print("(");
-        eL.genK(pw, putParenthesis);
-        pw.print(")");
-        pw.sub();
+        eL.genKra(pw, putParenthesis);
+        pw.println(");");
 		
 	}
 

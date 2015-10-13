@@ -1,3 +1,7 @@
+/*
+ * @author Thiago Martins de Jesus 380385
+ * @author VinnÃ­cius Ferreira da Silva 380032
+ * */
 /**
   
  */
@@ -13,7 +17,7 @@ import java.util.ArrayList;
  * end <br>
  * </code>
  * 
-   @author José
+   @author Josï¿½
    
  */
 public class MetaobjectCall {

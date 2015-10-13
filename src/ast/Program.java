@@ -1,3 +1,7 @@
+/*
+ * @author Thiago Martins de Jesus 380385
+ * @author Vinnícius Ferreira da Silva 380032
+ * */
 package ast;
 
 import java.util.*;
@@ -14,6 +18,9 @@ public class Program {
 
 
 	public void genKra(PW pw) {
+		for(KraClass k: classList){
+			k.genKra(pw, false);
+		}
 	}
 
 	public void genC(PW pw) {

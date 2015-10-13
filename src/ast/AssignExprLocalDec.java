@@ -1,6 +1,6 @@
 /*
- * @author Rodrigo Nascimento de Carvalho 380067
- * @author Philippe César Ramos 380415
+ * @author Thiago Martins de Jesus 380385
+ * @author Vinnícius Ferreira da Silva 380032
  * */
 
 
@@ -55,6 +55,15 @@ public class AssignExprLocalDec extends Expr{
 	@Override
 	public void genKra(PW pw, boolean putParenthesis) {
 		// TODO Auto-generated method stub
-		
+		if(localList != null){
+			localList.genKra(pw, putParenthesis);
+		}else{
+			firstExpr.genKra(pw, putParenthesis);
+			if(secondExpr != null){
+				pw.print(" = ");
+				secondExpr.genKra(pw, putParenthesis);
+			}
+			
+		}
 	}
 }

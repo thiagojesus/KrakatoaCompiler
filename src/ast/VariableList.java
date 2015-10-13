@@ -1,3 +1,7 @@
+/*
+ * @author Thiago Martins de Jesus 380385
+ * @author Vinnícius Ferreira da Silva 380032
+ * */
 package ast;
 
 import java.util.ArrayList;
@@ -15,6 +19,9 @@ public class VariableList {
 		return v.iterator();
 	}
 	
-	//falta implementar os metodos de procurar uma variavel nessa lista pra
-	//ver se ela existe, mas to com preguiça de fazer
+	public void genKra(PW pw, boolean putParenthesis){
+		for(Variable var: v){
+			var.genKra(pw, putParenthesis);
+		}
+	}
 }

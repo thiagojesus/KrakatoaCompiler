@@ -1,0 +1,45 @@
+class A {
+private    int n;
+;
+   public int get() {
+         return          this.private          int n;
+;
+   }
+   public void set(   int pn;
+) {
+      this.private       int n;
+;
+ =       pn   }
+}
+class B extends A {
+private    int k;
+;
+   public void m() {
+      int i;
+         read(         int i;
+)         read(private          int k;
+;
+)      super.set(,      0);
+      write(,      super.get();
+,      this.      public int get() {
+            return             this.private             int n;
+;
+      }
+,      this.private       int k;
+;
+,      i);
+   }
+   public void print() {
+      write(,      this.private       int k;
+;
+);
+   }
+}
+class Program {
+   public void run() {
+      B b;
+      b = new B();
+      b.set(,      1);
+      b.m();
+   }
+}

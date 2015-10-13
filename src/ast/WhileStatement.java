@@ -1,3 +1,7 @@
+/*
+ * @author Thiago Martins de Jesus 380385
+ * @author Vinnícius Ferreira da Silva 380032
+ * */
 package ast;
 
 public class WhileStatement extends Statement {
@@ -35,8 +39,9 @@ public class WhileStatement extends Statement {
         pw.print("(");
         condition.genKra(pw, putParenthesis);
         pw.print(")");
-        pw.println("");
-        repeat.genKra(pw, putParenthesis);         
+        pw.println("{");
+        if(repeat != null)
+        	repeat.genKra(pw, putParenthesis);         
         pw.sub();
 		
 	}

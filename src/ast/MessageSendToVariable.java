@@ -1,3 +1,7 @@
+/*
+ * @author Thiago Martins de Jesus 380385
+ * @author Vinnícius Ferreira da Silva 380032
+ * */
 package ast;
 
 
@@ -48,10 +52,33 @@ public class MessageSendToVariable extends MessageSend {
 	@Override
 	public void genKra(PW pw, boolean putParenthesis) {
 		// TODO Auto-generated method stub
+		//não estatico
+    	if(classIdent == null && methodCall != null){
+    		pw.printIdent(variable.getName()+".");
+    		pw.print(methodCall.getId()+"(");
+    		if(exprList != null)
+    			exprList.genKra(pw, putParenthesis);
+    		pw.println(");");
+    		//é estatico
+    	}else{
+    		if(methodCall != null){
+    			pw.printIdent(classIdent.getName()+".");
+        		pw.print(methodCall.getId()+"(");
+        		if(exprList != null)
+        			exprList.genKra(pw, putParenthesis);
+        		pw.println(");");
+    		}else{
+    			pw.printIdent(classIdent.getName()+".");
+    			pw.println(variable.getName()+";");
+    		}
+    	}
 		
 	}
-
-
+	
+	public Variable getVar(){
+		return this.variable;
+	}
+	
     private KraClass classIdent;
     private Variable variable;
     private Method methodCall;

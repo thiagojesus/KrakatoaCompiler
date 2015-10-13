@@ -1,3 +1,7 @@
+/*
+ * @author Thiago Martins de Jesus 380385
+ * @author Vinnícius Ferreira da Silva 380032
+ * */
 package ast;
 
 public class VariableExpr extends Expr {
@@ -18,7 +22,7 @@ public class VariableExpr extends Expr {
 
 	@Override
 	public void genKra(PW pw, boolean putParenthesis) {
-		pw.print( v.getName() );
+		pw.printIdent( v.getName() );
 		
 	}
 }

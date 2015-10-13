@@ -1,3 +1,7 @@
+/*
+ * @author Thiago Martins de Jesus 380385
+ * @author Vinnícius Ferreira da Silva 380032
+ * */
 package ast;
 
 public class MessageSendToSuper extends MessageSend { 
@@ -19,6 +23,10 @@ public class MessageSendToSuper extends MessageSend {
 	@Override
 	public void genKra(PW pw, boolean putParenthesis) {
 		// TODO Auto-generated method stub
+		pw.printIdent("super."+message.getId()+"(");
+		if(parameters != null)
+			parameters.genKra(pw, putParenthesis);
+		pw.println(");");
 		
 	}
 	

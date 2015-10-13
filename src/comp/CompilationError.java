@@ -1,9 +1,13 @@
+/*
+ * @author Thiago Martins de Jesus 380385
+ * @author VinnÃ­cius Ferreira da Silva 380032
+ * */
 package comp;
 
 /**
  * a compilation error
  * 
-   @author José
+   @author Josï¿½
  */
 public class CompilationError {
 

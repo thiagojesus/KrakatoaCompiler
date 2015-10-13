@@ -1,0 +1,35 @@
+class Point {
+private    int x;
+;
+private    int y;
+;
+   public void set(   int x;
+   int y;
+) {
+      this.private       int x;
+;
+ =       x      this.private       int y;
+;
+ =       y   }
+   public int getX() {
+         return          this.private          int x;
+;
+   }
+   public int getY() {
+         return          this.private          int y;
+;
+   }
+}
+class Program {
+private    Point p;
+;
+   public void run() {
+      this.private       Point p;
+;
+ = new Point();
+   }
+   public Point getPoint() {
+         return          this.private          Point p;
+;
+   }
+}

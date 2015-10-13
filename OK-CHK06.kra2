@@ -1,0 +1,33 @@
+class A {
+   public void run() {
+   }
+   public void m() {
+      A a;
+      a = ;
+      a.m();
+   }
+}
+class B {
+   public int run(   int n;
+) {
+         return          n   }
+   public void m() {
+   }
+}
+class C {
+private    B b;
+;
+   public void m() {
+   }
+   public B get() {
+         return          this.private          B b;
+;
+   }
+}
+class Program {
+   public void run() {
+      C c;
+      c = ;
+      c.m();
+   }
+}

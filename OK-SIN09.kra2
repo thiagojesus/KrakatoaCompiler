@@ -1,0 +1,34 @@
+class A {
+private    int n;
+;
+private    int k;
+;
+   private int m1() {
+         return  +          1   }
+   private void m2(   int pk;
+) {
+      this.private       int k;
+;
+ =       pk   }
+   public int m() {
+      this.      private void m2(      int pk;
+) {
+         this.private          int k;
+;
+ =          pk      }
+         return  +    }
+   public void init() {
+      this.private       int k;
+;
+ =       1      this.private       int n;
+;
+ =       0   }
+}
+class Program {
+   public void run() {
+      A a;
+      a = new A();
+      write(,      a.m();
+);
+   }
+}

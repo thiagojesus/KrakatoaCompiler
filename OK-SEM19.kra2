@@ -1,0 +1,87 @@
+class A {
+static private    int staticAnInt;
+;
+private    int anInt;
+;
+static private    A staticAnA;
+;
+private    A anA;
+;
+   public int getAnInt() {
+         return          this.private          int anInt;
+;
+   }
+   public void setAnInt(   int anInt;
+) {
+      this.private       int anInt;
+;
+ =       anInt   }
+   public A getAnA() {
+         return          this.private          A anA;
+;
+   }
+   public void setAnA(   A anA;
+) {
+      this.private       A anA;
+;
+ =       anA   }
+   public void staticMethod() {
+      A a;
+      a = new A();
+      A b;
+      b = new A();
+      b.setAnInt(,      0);
+      a.setAnA(,      b);
+      A.staticAnInt;
+ =       a.getAnInt();
+      A.staticAnA;
+ =       a.getAnA();
+         read(static private          int staticAnInt;
+;
+)      A.setAnInt(,      1);
+      write(,      A.getAnInt();
+);
+      a.setAnInt(,      2);
+      A.staticAnInt;
+ =  +       1   }
+   public void method() {
+      this.private       int anInt;
+;
+ =       5      this.private       A anA;
+;
+ = new A();
+      write(,);
+      A b;
+      b =       write(,      b.getAnInt();
+);
+   }
+}
+class B extends A {
+static private    int staticAnInt;
+;
+private    A anAB;
+;
+   public void staticMethod() {
+      B.staticAnInt;
+ =       10   }
+   public void method() {
+      this.private       A anAB;
+;
+ = new A();
+   }
+   public int getAnIntB() {
+         return          B.staticAnInt;
+   }
+}
+class Program {
+   public void run() {
+      A a;
+      a = new A();
+      a.method();
+      A.staticMethod();
+      B b;
+      b = new B();
+      B.staticMethod();
+      b.method();
+   }
+}

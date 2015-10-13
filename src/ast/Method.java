@@ -1,3 +1,7 @@
+/*
+ * @author Thiago Martins de Jesus 380385
+ * @author Vinnícius Ferreira da Silva 380032
+ * */
 package ast;
 
 import java.util.ArrayList;
@@ -41,18 +45,20 @@ public class Method{
 	}
 	
 	public void genKra(PW pw, boolean putParenthesis){
-		pw.add();
-        pw.print(qualifier.name()+ " ");
-        pw.print(returnType.getCname());
+		//pw.add();
+        pw.printIdent(qualifier.toString()+ " ");
+        pw.print(returnType.getCname() + " ");
         pw.print(this.id);
         pw.print("(");
         if(variables != null)
             variables.genKra(pw, putParenthesis);
         pw.print(") ");
-        pw.println("{");        
-        statementList.genKra(pw, putParenthesis);        
-        pw.printlnIdent("}");
+        pw.println("{"); 
+        pw.add();
+        statementList.genKra(pw, putParenthesis);  
         pw.sub();
+        pw.printlnIdent("}");
+        //pw.sub();
 	}
 	
 	public Method(String _id, Type _returnType, Symbol _qualifier, boolean _isStatic, boolean _isFinal, KraClass _motherClass){

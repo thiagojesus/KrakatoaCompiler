@@ -1,3 +1,7 @@
+/*
+ * @author Thiago Martins de Jesus 380385
+ * @author Vinnícius Ferreira da Silva 380032
+ * */
 package ast;
 
 
@@ -49,8 +53,22 @@ public class MessageSendToSelf extends MessageSend {
 
 	@Override
 	public void genKra(PW pw, boolean putParenthesis) {
-		// TODO Auto-generated method stub
-		
+		//é só o "this"
+        if(instance == null && eList == null && methodCall == null)
+        	pw.printlnIdent("this;");
+        else{
+        	//this.id
+            if(methodCall == null && eList == null){
+            	pw.printIdent("this.");
+            	instance.genKra(pw, putParenthesis);
+            }else{
+            	//this.id()
+                if(instance == null){
+                	pw.printIdent("this.");
+        			methodCall.genKra(pw, putParenthesis);
+                }
+            }
+        }
 	}
 	
 	

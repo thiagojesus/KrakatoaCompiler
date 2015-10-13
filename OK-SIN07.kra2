@@ -1,0 +1,114 @@
+class A {
+private    int n;
+;
+   public void put(   int pn;
+) {
+      this.private       int n;
+;
+ =       pn   }
+   public int get() {
+         return          this.private          int n;
+;
+   }
+}
+class No {
+private    No next;
+;
+private    A a;
+;
+   public void setNext(   No p_next;
+) {
+      this.private       No next;
+;
+ =       p_next   }
+   public No getNext() {
+         return          this.private          No next;
+;
+   }
+   public void set(   A pa;
+) {
+      this.private       A a;
+;
+ =       pa   }
+   public A get() {
+         return          this.private          A a;
+;
+   }
+}
+class B extends A {
+private    int k;
+;
+private    No first;
+;
+   public int get() {
+      write(,      this.private       int k;
+;
+);
+         return          super.get();
+   }
+   public void init(   int pk;
+) {
+      this.private       int k;
+;
+ =       pk   }
+   public void buildList() {
+      int i;
+      No w;
+      No newNo;
+      A a;
+      i =       this.      public int get() {
+         write(,         this.private          int k;
+;
+);
+            return             super.get();
+      }
+      this.private       No first;
+;
+ = new No();
+      w =       this.private       No first;
+;
+      w.setNext(,;
+);
+      a = new A();
+      a.put(,      i);
+      w.set(,      a);
+         while(1){
+{
+         i = i -          1            if ( i <=             0 ) 
+{
+               break;
+            }
+         newNo = new No();
+         newNo.setNext(,         this.private          No first;
+;
+);
+         a = new A();
+         a.put(,         i);
+         newNo.set(,         a);
+         this.private          No first;
+;
+ =          newNo         }
+   }
+   public void list() {
+      No w;
+      A a;
+      w =       this.private       No first;
+;
+         while(w !=          NULL){
+{
+         a =          w.get();
+         write(,         a.get();
+);
+         w =          w.getNext();
+         }
+   }
+}
+class Program {
+   public void run() {
+      B b;
+      b = new B();
+      b.put(,      10);
+      b.buildList();
+      b.list();
+   }
+}
