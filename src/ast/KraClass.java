@@ -5,7 +5,6 @@
 package ast;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 
 /*
@@ -21,7 +20,7 @@ public class KraClass extends Type {
    }
    
    public String getCname() {
-      return getName();
+	   return "_class_"+getName();
    }
    
    public boolean isFinal(){
@@ -83,6 +82,112 @@ public class KraClass extends Type {
        pw.println("}");
    }
    
+   public Iterator<InstanceVariable> getInstancesFromSuperclass(){
+	   InstanceVariableList superInstances = new InstanceVariableList();
+	   
+	   KraClass superC = superclass;
+	   while(superC != null){
+		   Iterator<InstanceVariable> superI = superC.getElementsFromInstList();
+		   
+		   while(superI.hasNext()){
+			   InstanceVariable superInstance = superI.next();
+			   
+			   
+			   if(this.searchInstance(superInstance.getName(), false) == null){
+				   if(superInstances.isThere(superInstance.getName(),false) == null){
+					   superInstances.addElement(superInstance); 
+				   }
+			   }
+			   
+			   
+		   }
+		   
+		   superC = superC.getSuperClass();
+	   }
+	   
+	   return superInstances.elements();
+   }
+   
+   public Variable searchInstance(String name, boolean staticFlag){
+	   return instanceVariableList.isThere(name, staticFlag);
+   }
+   
+public void genC(PW pw){
+	   
+	   
+	   pw.println("typedef");
+	   pw.add();
+	   pw.printlnIdent("struct _St_"+this.getName()+"{");
+	   pw.add();
+	   pw.printlnIdent("Func *vt;");
+	   
+	   Iterator<InstanceVariable> instIt = getInstancesFromSuperclass();
+	   while(instIt.hasNext()){
+		   pw.printIdent("");
+		   instIt.next().genC(pw, false);
+		   pw.print(";");
+		   pw.println(""); 
+	   }
+	   
+	   instIt = instanceVariableList.elements();
+	   while(instIt.hasNext()){
+		   pw.printIdent("");
+		   instIt.next().genC(pw, false);
+		   pw.print(";");
+		   pw.println("");
+	   }
+	   
+	   pw.sub();
+	   pw.printlnIdent("} "+getCname()+";");
+	   pw.sub();
+	   
+	   pw.println("");
+	   pw.println(getCname()+" *new_"+getName()+"(void);");
+	   pw.println("");
+	   
+	   instIt = instanceVariableList.elements();
+	   while(instIt.hasNext()){
+		   pw.printIdent("");
+		   instIt.next().genC(pw, true);
+		   pw.print(";");
+		   pw.println("");
+	   }
+	   pw.println("");
+	   
+	   for(Method m: methodList){
+		   pw.println("");
+		   m.genC(pw);
+	   }
+	   
+	   pw.println("");
+	   pw.println("Func VTclass_"+getName()+"[] = {");
+	   pw.add();
+	   //metodos da super classe 
+	   ArrayList<Method> sMethod = superclass.methodList;
+	   for(Method m: sMethod){
+		   if(!m.isStatic() && !m.isPrivate())
+			   pw.printIdent("( void (*)() ) "+m.getCname());
+		   pw.print(",");
+		   pw.println("");
+	   }
+	   pw.sub();
+	   pw.println("};");
+	   
+	   pw.println("");
+	   pw.println(getCname()+" *new_"+getName()+"(){");
+	   pw.add();
+	   pw.printlnIdent(getCname()+" *t;");
+	   pw.println("");
+	   pw.printlnIdent("if( (t = malloc(sizeof("+getCname()+"))) != NULL )");
+	   pw.add();
+	   pw.printlnIdent("t->vt = VTclass_"+getName()+";");
+	   pw.sub();
+	   pw.printlnIdent("return t;");
+	   pw.sub();
+	   pw.println("}");
+	   
+   }
+   
    public KraClass getSuperClass(){
 	   return this.superclass;
    }
@@ -115,12 +220,27 @@ public class KraClass extends Type {
 		   instanceVariableList.addElement(i.next(),isStatic);
 	   }
    }
+   
+   public Iterator<InstanceVariable> getElementsFromInstList(){
+	   return this.instanceVariableList.elements();
+   }
 
-private KraClass superclass;
+   private KraClass superclass;
    private InstanceVariableList instanceVariableList;
    private boolean isFinal;
    private boolean isStatic;
    private ArrayList<Method> methodList;
    // m�todos p�blicos get e set para obter e iniciar as vari�veis acima,
    // entre outros m�todos
+public int getMethodIndex(String id) {
+	// TODO Auto-generated method stub
+	int i = 0;
+	for(Method m: methodList){
+		if(m.getId().compareTo(id)==0)
+			return i;
+		else
+			i++;
+	}
+	return 0;
+}
 }

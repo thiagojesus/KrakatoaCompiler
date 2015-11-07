@@ -14,7 +14,10 @@ public class ReturnStatement extends Statement {
 	@Override
 	public void genC(PW pw) {
 		// TODO Auto-generated method stub
-		
+		pw.println("");
+		pw.printIdent("return ");
+		e.genC(pw, false);
+		pw.print(";");
 	}
 
 	@Override

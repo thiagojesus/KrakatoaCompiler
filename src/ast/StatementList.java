@@ -5,6 +5,7 @@
 package ast;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class StatementList {
 
@@ -29,6 +30,15 @@ public class StatementList {
 	public void genKra(PW pw, boolean putParenthesis){
 		for(Statement s: sL){
 			s.genKra(pw, putParenthesis);
+		}
+	}
+	
+	public void genC(PW pw){
+		Iterator<Statement> statIt = sL.iterator();
+		while(statIt.hasNext()){
+			statIt.next().genC(pw);
+			pw.println("");
+			//pw.printIdent("");
 		}
 	}
 }

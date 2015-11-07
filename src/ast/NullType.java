@@ -14,7 +14,7 @@ public class NullType extends Type {
 	@Override
 	public String getCname() {
 		// TODO Auto-generated method stub
-		return null;
+		return "null";
 	}
 
 }

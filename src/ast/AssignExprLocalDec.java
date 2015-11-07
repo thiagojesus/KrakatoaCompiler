@@ -48,8 +48,32 @@ public class AssignExprLocalDec extends Expr{
 	private VariableList localList;
 	@Override
 	public void genC(PW pw, boolean putParenthesis) {
-		// TODO Auto-generated method stub
-		
+		if(firstExpr == null){
+			if(localList != null){
+				Iterator<Variable> varIt = localList.elements();
+				Variable aux;
+				while(varIt.hasNext()){
+					aux = varIt.next();
+					Type t = aux.getType();
+					if(t.getCname().compareTo("int") == 0 || t.getCname().compareTo("char *") == 0 || t.getCname().compareTo("void") == 0)
+						pw.print(aux.getType().getCname()+" _"+aux.getName());
+					else
+						pw.print(aux.getType().getCname()+" *_"+aux.getName());
+				}
+			}
+		}else{
+			firstExpr.genC(pw, putParenthesis);
+			if(secondExpr != null){
+				pw.print(" = ");
+				Type t = secondExpr.getType();
+				if(t.getCname().compareTo("int") == 0 || t.getCname().compareTo("char *") == 0 || t.getCname().compareTo("void") == 0)
+					secondExpr.genC(pw, putParenthesis);
+				else{
+					pw.print("( "+ t.getCname() +"* ) ");
+					secondExpr.genC(pw, putParenthesis);
+				}
+			}
+		}	
 	}
 
 	@Override

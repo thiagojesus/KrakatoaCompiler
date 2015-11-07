@@ -22,7 +22,24 @@ public class IfStatement extends Statement {
 	@Override
 	public void genC(PW pw) {
 		// TODO Auto-generated method stub
-		
+		pw.printIdent("if(");
+		condition.genC(pw, true);
+		pw.print("){");
+		pw.add();
+		pw.println("");
+		thenPart.genC(pw);
+		pw.sub();
+		pw.printlnIdent("}");
+		if(elsePart != null){
+			pw.printIdent("else{");
+			pw.add();
+			pw.println("");
+			elsePart.genC(pw);
+			pw.sub();
+			pw.println("");
+			pw.println("");
+			pw.printlnIdent("}");
+		}
 	}
 
 

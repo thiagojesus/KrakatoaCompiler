@@ -840,6 +840,8 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 	//falta verificar nas locais
 	private ReadStatement readStatement() {
 		ArrayList<Variable> vR = new ArrayList<Variable>();
+		ArrayList<Boolean> vB = new ArrayList<Boolean>();
+		ArrayList<String> vS = new ArrayList<String>();
 		lexer.nextToken();
 		if ( lexer.token != Symbol.LEFTPAR ) signalError.show("( expected");
 		lexer.nextToken();
@@ -847,6 +849,7 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 		boolean self = false, isStatic = false;
 		//chamada de classe estatica é diferente, precisamos controlar isso
 		String staticName = null;
+		String sName = null;
 		Variable v = null;
 		while (true) {
 			if ( lexer.token == Symbol.THIS ) {
@@ -870,7 +873,7 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 					isStatic = true;
 					if(lexer.token != Symbol.DOT) signalError.show(". expected");
 					lexer.nextToken();
-					String sName = lexer.getStringValue();
+					sName = lexer.getStringValue();
 					v = currentClass.getInstanceVariable(sName,true);
 					if(v==null || !v.isStatic())
 						signalError.show("Could not find static variable "+ sName);
@@ -888,6 +891,10 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 			}
 			lexer.nextToken();
 			vR.add(v);
+			vB.add(self);
+			self = false;
+			vS.add(sName);
+			sName = null;
 			if ( lexer.token == Symbol.COMMA )
 				lexer.nextToken();
 			else
@@ -907,7 +914,7 @@ ReadStat “;” | WriteStat “;” | “break” “;” | “;” | CompState
 		if ( lexer.token != Symbol.SEMICOLON )
 			signalError.show(SignalError.semicolon_expected);
 		lexer.nextToken();
-		return new ReadStatement(vR);
+		return new ReadStatement(vR,vB,vS);
 	}
 
 	private WriteStatement writeStatement() {

@@ -27,7 +27,14 @@ public class WhileStatement extends Statement {
 	@Override
 	public void genC(PW pw) {
 		// TODO Auto-generated method stub
-		
+		pw.printIdent("while(");
+		condition.genC(pw, true);
+		pw.print("){");
+		pw.add();
+		pw.println("");
+		repeat.genC(pw);
+		pw.sub();
+		pw.printlnIdent("}");
 	}
 
 

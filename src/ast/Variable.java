@@ -23,6 +23,13 @@ public class Variable {
         pw.println(";");
     }
     
+    public void genC(PW pw){
+    	if(type.getCname().compareTo("int") == 0 || type.getCname().compareTo("char *") == 0 || type.getCname().compareTo("void") == 0)
+    		pw.print(type.getCname()+" _"+name);
+    	else
+    		pw.print(type.getCname()+"* _"+name);
+    }
+    
     public boolean isStatic(){
     	return false;
     }

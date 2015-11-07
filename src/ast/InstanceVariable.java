@@ -22,6 +22,22 @@ public class InstanceVariable extends Variable {
         
     }
     
+    public void genC(PW pw, boolean putParenthesis){
+    	Type t = super.getType();
+    	if(staticFlag){
+    		if(t.getCname().compareTo("int") == 0 || t.getCname().compareTo("char *") == 0 || t.getCname().compareTo("void") == 0)
+        		pw.print(t.getCname()+" _static_"+motherClass.getName()+"_"+super.getName());
+        	else
+        		pw.print(t.getCname()+"* _static_"+motherClass.getName()+"_"+super.getName());
+    	}else{
+    		if(t.getCname().compareTo("int") == 0 || t.getCname().compareTo("char *") == 0 || t.getCname().compareTo("void") == 0)
+        		pw.print(t.getCname()+" _"+motherClass.getName()+"_"+super.getName());
+        	else
+        		pw.print(t.getCname()+"* _"+motherClass.getName()+"_"+super.getName());
+    	}
+    	
+    }
+    
     public void setStatic(boolean isStatic){
     	this.staticFlag = isStatic;
     }

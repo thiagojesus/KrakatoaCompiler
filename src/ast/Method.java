@@ -96,6 +96,65 @@ public class Method{
 		return false;
 	}
 	
+	public String getCname(){
+		if(isStatic)
+			return "_static_"+motherClass.getName()+"_"+id;
+		else
+			return "_"+motherClass.getName()+"_"+id;
+	}
+	
+	public KraClass getThisClass(){
+		return this.motherClass;
+	}
+	
+	public void genC(PW pw){
+		if(isStatic){
+			if(returnType.getCname().compareTo("int") == 0 || returnType.getCname().compareTo("char *") == 0 || returnType.getCname().compareTo("void") == 0)
+				pw.print(returnType.getCname()+" _static_"+motherClass.getName()+"_"+id+"(");
+			else
+				pw.print(returnType.getCname()+"* _static_"+motherClass.getName()+"_"+id+"(");
+			if(variables != null){
+				Iterator<Variable> paramIt = variables.elements();
+				while(paramIt.hasNext()){
+					paramIt.next().genC(pw);
+					if(paramIt.hasNext())
+						pw.print(", ");
+				}
+			}
+			pw.print("){");
+			pw.println("");
+			pw.add();
+			//pw.printIdent("");
+			statementList.genC(pw);
+			
+			pw.sub();
+			pw.println("");
+			pw.printlnIdent("}");
+		}else{
+			if(returnType.getCname().compareTo("int") == 0 || returnType.getCname().compareTo("char *") == 0 || returnType.getCname().compareTo("void") == 0)
+				pw.print(returnType.getCname()+" _"+motherClass.getName()+"_"+id+"( "+motherClass.getCname()+" *this");
+			else
+				pw.print(returnType.getCname()+"* _"+motherClass.getName()+"_"+id+"( "+motherClass.getCname()+" *this");
+			if(variables != null){
+				pw.print(", ");
+				Iterator<Variable> paramIt = variables.elements();
+				while(paramIt.hasNext()){
+					paramIt.next().genC(pw);
+					if(paramIt.hasNext())
+						pw.print(", ");
+				}
+			}
+			pw.print("){");
+			pw.println("");
+			pw.add();
+			statementList.genC(pw);
+			
+			pw.sub();
+			pw.println("");
+			pw.printlnIdent("}");
+		}
+	}
+	
 	private Symbol qualifier;
 	private boolean isStatic;
 	private boolean isFinal;

@@ -24,4 +24,10 @@ public class VariableList {
 			var.genKra(pw, putParenthesis);
 		}
 	}
+	
+	public void genC(PW pw, boolean putParenthesis){
+		for(Variable var: v){
+			var.genC(pw);
+		}
+	}
 }
