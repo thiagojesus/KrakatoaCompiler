@@ -88,13 +88,13 @@ public class MessageSendToVariable extends MessageSend {
         	}
         	//fechamos a declaracao dos tipos dos argumentos e passamos para a chamada em si
         	//que consistira de nome da variavel passando o numero do metodo a se pegar na tabela virtual e os argumentos
-        	pw.print(") ");
+        	pw.print(")) ");
         	pw.print("_"+variable.getName()+"->vt["+virtualTableIndex+"])(_"+variable.getName());
         	if(exprList != null){
         		pw.print(", ");
         		exprList.genC(pw);
         	}
-        	pw.print(") )");
+        	pw.print(")");
         //caso em que ha chamada estatica de metodo
         }else if(variable == null){
         	pw.print(methodCall.getCname()+"(");
@@ -136,7 +136,7 @@ public class MessageSendToVariable extends MessageSend {
         	}
         	//fechamos a declaracao dos tipos dos argumentos e passamos para a chamada em si
         	//que consistira de nome da variavel passando o numero do metodo a se pegar na tabela virtual e os argumentos
-        	pw.print(") ");
+        	pw.print(")) ");
         	pw.print("_static_"+classIdent.getName()+"_"+variable.getName()+"->vt["+virtualTableIndex+"])(_static_"+ classIdent.getName() +"_"+variable.getName());
         	if(exprList != null){
         		pw.print(", ");

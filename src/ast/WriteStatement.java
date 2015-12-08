@@ -18,10 +18,12 @@ public class WriteStatement extends Statement {
 	@Override
 	public void genC(PW pw) {
 		// TODO Auto-generated method stub
+		int count = 0;
 		if(isLn){
 			Iterator<Expr> exprIt = eL.elements();
 			while(exprIt.hasNext()){
 				Expr aux = exprIt.next();
+				count++;
 				if(aux.getType().getName().equals(Type.stringType.getName())){
 					pw.printIdent("puts( ");
 					aux.genC(pw, false);
@@ -29,7 +31,7 @@ public class WriteStatement extends Statement {
 				}else{
 					pw.printIdent("printf(\"%d \", ");
 					aux.genC(pw, false);
-					pw.print(" );");
+					//pw.print(" )");
 				}
 			}
 			pw.print("printf(\"\n\");");
@@ -37,17 +39,25 @@ public class WriteStatement extends Statement {
 			Iterator<Expr> exprIt = eL.elements();
 			while(exprIt.hasNext()){
 				Expr aux = exprIt.next();
+				count++;
 				if(aux.getType().getName().equals(Type.stringType.getName())){
 					pw.printIdent("puts( ");
 					aux.genC(pw, false);
-					pw.print(" );");
+					pw.print(" )");
 				}else{
-					pw.printIdent("printf(\"%d \", ");
-					aux.genC(pw, false);
-					pw.print(" );");
+					if(count == 1){
+						pw.printIdent("printf(\"%d \", ");
+						aux.genC(pw, false);
+					}else{
+						pw.print(",");
+						aux.genC(pw, false);
+					}
+					
+					//pw.print(" )");
 				}
 			}
 		}
+		pw.print(")");
 	}
 
 	@Override

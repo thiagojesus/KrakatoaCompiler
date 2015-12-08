@@ -58,12 +58,12 @@ public class MessageSendToSelf extends MessageSend {
         	pw.print("this");
         //se nao ha chama para metodo nem argumentos, estamos tentando acessar uma instancia da classe
         }else if(methodCall == null && eList == null){
-        	pw.print("this->_"+instance.getName());
+        	pw.print("this->_"+thisClass.getName()+"_"+instance.getName());
         //caso contrario eh uma chamada do tipo this.m()
         }else if(instance == null){
         	//se eh privado, ligacao estatica eh feita
         	if(methodCall.isPrivate()){
-        		pw.print(methodCall.getCname()+"(( "+ methodCall.getThisClass().getCname() +" ) *this");
+        		pw.print(methodCall.getCname()+"(( "+ methodCall.getThisClass().getCname() +" *) this");
         		if(eList != null){
         			pw.print(", ");
             		eList.genC(pw);
@@ -103,18 +103,18 @@ public class MessageSendToSelf extends MessageSend {
             	}
             	//fechamos a declaracao dos tipos dos argumentos e passamos para a chamada em si
             	//que consistira de nome da variavel passando o numero do metodo a se pegar na tabela virtual e os argumentos
-            	pw.print(") ");
+            	pw.print(")) ");
             	pw.print("this->vt["+virtualTableIndex+"])(("+methodClass.getCname()+"*) this");
             	if(eList != null){
             		pw.print(", ");
             		eList.genC(pw);
             	}
-            	pw.print(") )");
+            	pw.print(")");
         	}
-        	pw.print("this."+methodCall.getId()+"(");
-        	if(eList != null)
-        		eList.genC(pw);
-        	pw.print(")");
+//        	pw.print("this."+methodCall.getId()+"(");
+//        	if(eList != null)
+//        		eList.genC(pw);
+//        	pw.print(")");
         }else{
         	//primeiro adquirimos a classe que o metodo pertence com getThisClass()
         	KraClass methodClass = methodCall.getThisClass();

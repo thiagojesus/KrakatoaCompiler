@@ -12,7 +12,7 @@ public class AssignStatement extends Statement {
 		// TODO Auto-generated method stub
 		pw.printIdent("");
 		assign.genC(pw, false);
-		pw.print(";");
+		//pw.print(";");
 	}
 
 	@Override

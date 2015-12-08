@@ -145,14 +145,6 @@ public void genC(PW pw){
 	   pw.println(getCname()+" *new_"+getName()+"(void);");
 	   pw.println("");
 	   
-	   instIt = instanceVariableList.elements();
-	   while(instIt.hasNext()){
-		   pw.printIdent("");
-		   instIt.next().genC(pw, true);
-		   pw.print(";");
-		   pw.println("");
-	   }
-	   pw.println("");
 	   
 	   for(Method m: methodList){
 		   pw.println("");
@@ -162,14 +154,25 @@ public void genC(PW pw){
 	   pw.println("");
 	   pw.println("Func VTclass_"+getName()+"[] = {");
 	   pw.add();
+	   int cont=0;
 	   //metodos da super classe 
-	   ArrayList<Method> sMethod = superclass.methodList;
-	   for(Method m: sMethod){
-		   if(!m.isStatic() && !m.isPrivate())
-			   pw.printIdent("( void (*)() ) "+m.getCname());
-		   pw.print(",");
-		   pw.println("");
+	   if(superclass != null){
+		   ArrayList<Method> sMethod = superclass.methodList;
+		   for(Method m: sMethod){
+			   if(!m.isStatic() && !m.isPrivate())
+				   pw.printIdent("( void (*)() ) "+m.getCname());
+			   pw.print(",");
+			   pw.println("");
+		   }
 	   }
+	   
+	   for(Method m: methodList){
+		   pw.printIdent("( void (*)() ) "+m.getCname());
+		   cont++;
+		   if(cont != methodList.size() && methodList.size() >1)
+			   pw.println(","); 
+	   }
+	   pw.println("");
 	   pw.sub();
 	   pw.println("};");
 	   

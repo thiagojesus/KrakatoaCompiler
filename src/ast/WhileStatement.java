@@ -28,11 +28,14 @@ public class WhileStatement extends Statement {
 	public void genC(PW pw) {
 		// TODO Auto-generated method stub
 		pw.printIdent("while(");
-		condition.genC(pw, true);
+		condition.genC(pw, false);
 		pw.print("){");
 		pw.add();
 		pw.println("");
-		repeat.genC(pw);
+		if(repeat != null)
+			repeat.genC(pw);
+		else
+			s.genC(pw);
 		pw.sub();
 		pw.printlnIdent("}");
 	}

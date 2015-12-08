@@ -128,14 +128,14 @@ public class Method{
 			statementList.genC(pw);
 			
 			pw.sub();
-			pw.println("");
+			//pw.println("");
 			pw.printlnIdent("}");
 		}else{
 			if(returnType.getCname().compareTo("int") == 0 || returnType.getCname().compareTo("char *") == 0 || returnType.getCname().compareTo("void") == 0)
 				pw.print(returnType.getCname()+" _"+motherClass.getName()+"_"+id+"( "+motherClass.getCname()+" *this");
 			else
 				pw.print(returnType.getCname()+"* _"+motherClass.getName()+"_"+id+"( "+motherClass.getCname()+" *this");
-			if(variables != null){
+			if(variables.getSize() != 0){
 				pw.print(", ");
 				Iterator<Variable> paramIt = variables.elements();
 				while(paramIt.hasNext()){

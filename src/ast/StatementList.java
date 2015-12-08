@@ -37,7 +37,8 @@ public class StatementList {
 		Iterator<Statement> statIt = sL.iterator();
 		while(statIt.hasNext()){
 			statIt.next().genC(pw);
-			pw.println("");
+			pw.println(";");
+			//pw.println("");
 			//pw.printIdent("");
 		}
 	}

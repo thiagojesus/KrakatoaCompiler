@@ -55,25 +55,31 @@ public class AssignExprLocalDec extends Expr{
 				while(varIt.hasNext()){
 					aux = varIt.next();
 					Type t = aux.getType();
-					if(t.getCname().compareTo("int") == 0 || t.getCname().compareTo("char *") == 0 || t.getCname().compareTo("void") == 0)
+					if(t.getCname().compareTo("int") == 0 || t.getCname().compareTo("char *") == 0 || t.getCname().compareTo("void") == 0 || t.getCname().compareTo("boolean") == 0)
 						pw.print(aux.getType().getCname()+" _"+aux.getName());
 					else
 						pw.print(aux.getType().getCname()+" *_"+aux.getName());
+					//pw.println(";");
 				}
 			}
 		}else{
 			firstExpr.genC(pw, putParenthesis);
+			
 			if(secondExpr != null){
 				pw.print(" = ");
 				Type t = secondExpr.getType();
-				if(t.getCname().compareTo("int") == 0 || t.getCname().compareTo("char *") == 0 || t.getCname().compareTo("void") == 0)
+				if(t.getCname().compareTo("int") == 0 || t.getCname().compareTo("char *") == 0 || t.getCname().compareTo("void") == 0){
 					secondExpr.genC(pw, putParenthesis);
-				else{
-					pw.print("( "+ t.getCname() +"* ) ");
+					//pw.println(";");
+			}else{
+					//pw.print("( "+ t.getCname() +"* ); ");
 					secondExpr.genC(pw, putParenthesis);
 				}
+				//pw.println(";");
 			}
-		}	
+			
+		}
+		//pw.println(";");
 	}
 
 	@Override

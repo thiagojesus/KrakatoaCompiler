@@ -23,11 +23,12 @@ public class IfStatement extends Statement {
 	public void genC(PW pw) {
 		// TODO Auto-generated method stub
 		pw.printIdent("if(");
-		condition.genC(pw, true);
+		condition.genC(pw, false);
 		pw.print("){");
 		pw.add();
 		pw.println("");
 		thenPart.genC(pw);
+		pw.println(";");
 		pw.sub();
 		pw.printlnIdent("}");
 		if(elsePart != null){
@@ -36,8 +37,8 @@ public class IfStatement extends Statement {
 			pw.println("");
 			elsePart.genC(pw);
 			pw.sub();
-			pw.println("");
-			pw.println("");
+			//pw.println("");
+			//pw.println("");
 			pw.printlnIdent("}");
 		}
 	}

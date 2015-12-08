@@ -12,13 +12,13 @@ public class NewExpr extends Expr {
 	@Override
 	public void genC(PW pw, boolean putParenthesis) {
 		// TODO Auto-generated method stub
-		pw.println("new_"+objectClass.getCname()+"();");
+		pw.print("new_"+objectClass.getName()+"()");
 	}
 
 	@Override
 	public void genKra(PW pw, boolean putParenthesis) {
 		// TODO Auto-generated method stub
-		pw.println("new "+objectClass.getName()+"();");
+		pw.print("new "+objectClass.getName()+"()");
 	}
 
 	@Override
